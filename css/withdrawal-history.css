@@ -1,0 +1,325 @@
+/* css/withdrawal-history-light-revised.css */
+
+/* 1. GLOBAL STYLES & RESETS */
+html {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f7f9; /* Light grey background */
+  color: #333333; /* Dark grey default text */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+::selection {
+  background-color: #007bff; /* Standard blue selection */
+  color: #ffffff;
+}
+
+/* 2. LAYOUT CONTAINER */
+.dashboard-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 25px 30px;
+  background-color: #ffffff; /* White container background */
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Softer shadow for light theme */
+  border: 1px solid #e0e0e0; /* Light border for definition */
+}
+
+/* 3. TYPOGRAPHY */
+h1 {
+  font-size: 2.0rem;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 30px;
+  color: #2c3e50; /* Dark blue-grey for heading */
+  font-weight: 600;
+  letter-spacing: 0.25px;
+}
+
+/* 4. TABLE STYLES - REVISED */
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 30px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+}
+
+.withdrawal-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px; /* Adjusted min-width */
+  /* table-layout: fixed; /* Uncomment if you want fixed column widths */
+}
+
+.withdrawal-history-table th,
+.withdrawal-history-table td {
+  padding: 12px 15px; /* Adjusted padding */
+  text-align: left;
+  font-size: 0.88rem; /* Slightly adjusted font size */
+  vertical-align: middle;
+  border-bottom: 1px solid #e9ecef; /* Lighter border for rows */
+  border-left: none;
+  border-right: none;
+}
+
+/* Column specific alignments and widths (optional, adjust as needed) */
+.withdrawal-history-table th:nth-child(1), /* Amount */
+.withdrawal-history-table td:nth-child(1) {
+  /* width: 20%; */ /* Example width */
+  padding-left: 20px;
+}
+
+.withdrawal-history-table th:nth-child(2), /* Details */
+.withdrawal-history-table td:nth-child(2) {
+  /* width: 50%; */ /* Example width */
+}
+
+.withdrawal-history-table th:nth-child(3), /* Status */
+.withdrawal-history-table td:nth-child(3) {
+  /* width: 30%; */ /* Example width */
+  text-align: right; /* Align text/content to the right for the status column header */
+  padding-right: 20px;
+}
+
+/* Styling for the cell containing the status pill */
+.withdrawal-history-table td:nth-child(3) {
+  display: flex;
+  justify-content: flex-end; /* Aligns pill to the right */
+  align-items: center;      /* Vertically centers pill in the cell */
+}
+
+
+.withdrawal-history-table tr td:last-child,
+.withdrawal-history-table tr th:last-child {
+    /* Ensures padding is consistently applied if it's not the status column */
+    /* padding-right: 20px; // Already handled by individual column rules */
+}
+
+
+.withdrawal-history-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase; /* Kept uppercase for headers */
+  letter-spacing: 0.4px; /* Adjusted letter spacing */
+  border-top: none;
+  border-bottom: 2px solid #dee2e6; /* Stronger border for header bottom */
+}
+
+.withdrawal-history-table tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.withdrawal-history-table tbody tr:nth-of-type(even) {
+  background-color: transparent; /* Removed striping for a cleaner look like the image */
+}
+.withdrawal-history-table tbody tr:hover {
+  background-color: #f1f3f5; /* Slightly more noticeable hover */
+}
+ .withdrawal-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.details-cell span {
+    display: block;
+    line-height: 1.45; /* Adjusted line-height */
+    margin-bottom: 3px; /* Adjusted margin */
+    font-size: 0.82rem; /* Slightly smaller for details */
+    color: #555;
+}
+.details-cell span:first-child {
+    color: #333; /* Make account number slightly more prominent */
+    font-weight: 500;
+}
+.details-cell span:last-child {
+    margin-bottom: 0;
+}
+
+/* 5. STATUS INDICATOR PILLS - REVISED */
+.status-pending,
+.status-completed, .status-success,
+.status-processed,
+.status-failed, .status-rejected,
+.status-na {
+  box-sizing: border-box;
+  padding: 4px 12px;    /* Slightly reduced vertical padding, increased horizontal */
+  border-radius: 12px;  /* Standardized pill rounding */
+  font-weight: 500;
+  font-size: 0.75em;   /* Relative to cell font-size */
+  line-height: 1.5;     /* Adjusted line height for pill text */
+  display: inline-block;
+  text-align: center;
+  min-width: 85px;      /* Adjusted min width for pill consistency */
+  letter-spacing: 0.2px;
+  text-transform: capitalize;
+  border-width: 1px;
+  border-style: solid;
+  vertical-align: middle; /* Good for inline-block elements */
+}
+
+/* Light Theme Status Pills (using image cues for "Pending" and assuming "Confirmed" is green) */
+.status-pending {
+  background-color: #fff0c7; /* Lighter, more subtle yellow BG as per image's Pending */
+  color: #f57c00;            /* Dark Orange Text */
+  border-color: #ffe082;     /* Light Orange Border */
+}
+.status-completed,  /* For general "Completed" */
+.status-success {   /* For "Confirmed" or "Successful" states, likely green */
+  background-color: #e6f7e9; /* Light Green BG */
+  color: #2e7d32;            /* Dark Green Text */
+  border-color: #a5d6a7;     /* Light Green Border */
+}
+.status-processed { /* Assuming a blue for processed if different from confirmed */
+  background-color: #e1f5fe;
+  color: #0277bd;
+  border-color: #81d4fa;
+}
+.status-failed,
+.status-rejected {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #ef9a9a;
+}
+.status-na {
+  background-color: #eceff1;
+  color: #546e7a;
+  border-color: #b0bec5;
+}
+
+/* 6. BUTTON STYLES */
+.view-history-button {
+  display: inline-block;
+  padding: 10px 24px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease, box-shadow 0.2s ease;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+.view-history-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 86, 179, 0.4);
+}
+.view-history-button:active {
+  transform: translateY(0px);
+  background-color: #004085;
+  box-shadow: 0 1px 2px rgba(0, 64, 133, 0.3);
+}
+
+/* 7. MEDIA QUERIES */
+@media (max-width: 768px) {
+  .dashboard-container {
+    width: 95%;
+    padding: 20px 15px;
+    margin: 20px auto;
+  }
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 25px;
+  }
+  .withdrawal-history-table th,
+  .withdrawal-history-table td {
+    padding: 10px 8px; /* Reduced padding for smaller screens */
+    font-size: 0.82rem;
+  }
+  .withdrawal-history-table th:nth-child(1),
+  .withdrawal-history-table td:nth-child(1) {
+    padding-left: 10px;
+  }
+  .withdrawal-history-table th:nth-child(3),
+  .withdrawal-history-table td:nth-child(3) {
+    padding-right: 10px;
+  }
+   .details-cell span {
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .status-pending, .status-completed, .status-success, .status-processed, .status-failed, .status-rejected, .status-na {
+    font-size: 0.72em; /* Pills scale with cell font */
+    min-width: 75px;
+    padding: 3px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    background-color: #ffffff;
+  }
+  .dashboard-container {
+    border-radius: 0;
+    margin: 0 auto;
+    width: 100%;
+    padding: 15px 0px; /* Container padding removed, rely on cell padding */
+    min-height: 100vh;
+    box-shadow: none;
+    border: none;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding-left: 10px; /* Add padding if container has none */
+    padding-right: 10px;
+  }
+   .withdrawal-history-table th,
+  .withdrawal-history-table td {
+    font-size: 0.75rem;
+    padding: 8px 5px; /* Further reduced padding */
+  }
+  .withdrawal-history-table th:nth-child(1),
+  .withdrawal-history-table td:nth-child(1) {
+    padding-left: 10px; /* Ensure first cell has some left padding */
+  }
+  .withdrawal-history-table th:nth-child(3),
+  .withdrawal-history-table td:nth-child(3) {
+    padding-right: 10px; /* Ensure status cell has some right padding for the pill */
+  }
+  .details-cell span {
+    font-size: 0.7rem;
+    line-height: 1.35;
+  }
+   .status-pending, .status-completed, .status-success, .status-processed, .status-failed, .status-rejected, .status-na {
+    font-size: 0.7em;
+    min-width: 65px;
+    padding: 2px 8px;
+  }
+  .view-history-button {
+    display: block;
+    width: calc(100% - 30px); /* Full width with some margin */
+    margin: 25px auto;
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+  .table-responsive-wrapper {
+     border-left: none;
+     border-right: none;
+     border-radius: 0;
+     border-top: 1px solid #dee2e6;
+     border-bottom: 1px solid #dee2e6;
+     margin-bottom: 20px;
+  }
+}
