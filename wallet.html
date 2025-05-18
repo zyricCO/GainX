@@ -224,7 +224,9 @@
       <a href="dashboard.html" class="dashboard-link">Back to Dashboard</a>
     </div>
 
-  </div> <div id="withdrawalModal" class="modal">
+    </div>
+
+  <div id="withdrawalModal" class="modal">
     <div class="modal-content">
       <span class="close-button" id="closeWithdrawModalBtn">&times;</span>
       <h2>Withdraw Funds</h2>
@@ -258,22 +260,6 @@
         <input type="text" id="withdrawalUsdtAddress" name="withdrawalUsdtAddress" placeholder="Starts with T..." required>
         <button id="submitUsdtWithdrawalBtn">Submit USDT Withdrawal</button>
       </div>
-    </div>
-  </div>
-
-  <div id="inrNoticeModal" class="modal" style="display: none; z-index: 1001;">
-    <div class="modal-content" style="max-width: 480px;">
-      <span class="close-button" id="closeInrNoticeBtnModal">&times;</span>
-      <h2 style="color: #dc3545; text-align:center;">Important Notice</h2>
-      <p style="font-size: 1.05em; line-height: 1.6; color: #333; margin-bottom: 25px; text-align: center;">
-        INR Withdrawals Are Taking Longer than Usual. Because Of The Undergoing Maintenance, If You Face Any Inconvenience Please Wait For The Maintenance To Complete.
-      </p>
-      <p style="font-size: 0.9em; color: #555; margin-bottom: 25px; text-align: center;">
-        If you require an urgent withdrawal, please consider using the USDT-TRC20 option if available, or wait for the maintenance to complete.
-      </p>
-      <button id="acknowledgeInrNoticeBtn" class="withdrawal-form button" style="background-color: #007bff; color:white; width: auto; padding: 10px 25px; display: block; margin: 0 auto; font-size: 1em; border:none; border-radius: 5px; cursor:pointer;">
-        Acknowledge & Proceed
-      </button>
     </div>
   </div>
   <script type="module">
@@ -341,6 +327,8 @@
           }
         });
     }
+
+    // formatDate function removed as it's no longer used
 
     function updateWalletData(userId) {
       const zsgValueRef = ref(database, 'tokenInfo/currentValue');
@@ -458,6 +446,7 @@
       });
     }
 
+    // fetchTransactionHistory function removed
 
     if (auth && database) {
         onAuthStateChanged(auth, (user) => {
@@ -468,6 +457,7 @@
                 userEmailSpan.textContent = user.email || 'User';
             }
             updateWalletData(currentUserId);
+            // Call to fetchTransactionHistory removed
           } else {
             currentUserId = null;
             console.log("User is not authenticated. Redirecting to login.");
@@ -482,6 +472,7 @@
             setTextToDefault('usdtBalance', 'N/A');
             setTextToDefault('withdrawalAvailableWallet', '0.00');
             setTextToDefault('withdrawalAvailableWalletInr', '0.00');
+            // Logic for clearing transaction history table removed
           }
         });
     } else {
@@ -496,11 +487,6 @@
     const withdrawalModal = document.getElementById('withdrawalModal');
     const openWithdrawModalButton = document.getElementById('openWithdrawModalButton');
     const closeWithdrawModalBtn = document.getElementById('closeWithdrawModalBtn');
-
-    // NEW: INR Notice Modal Element Getters
-    const inrNoticeModal = document.getElementById('inrNoticeModal');
-    const closeInrNoticeBtnModal = document.getElementById('closeInrNoticeBtnModal');
-    const acknowledgeInrNoticeBtn = document.getElementById('acknowledgeInrNoticeBtn');
 
     // Form Getters
     const impsNeftForm = document.getElementById('impsNeftForm');
@@ -521,80 +507,43 @@
     const submitUsdtWithdrawalBtn = document.getElementById('submitUsdtWithdrawalBtn');
 
 
-    // Function to show the actual withdrawal modal (extracted for reusability)
-    function showMainWithdrawalModal() {
-        if (!currentUserId) {
-            alert("Please log in to withdraw funds."); // Consider a styled alert/notice for consistency
-            return;
-        }
-        withdrawalModal.style.display = "block";
-        impsNeftForm.style.display = "block"; // Default to IMPS
-        usdtTrc20Form.style.display = "none";
-        if (selectImpsNeftBtn) selectImpsNeftBtn.classList.add('active');
-        if (selectUsdtTrc20Btn) selectUsdtTrc20Btn.classList.remove('active');
-
-        // Clear previous input values
-        if (withdrawalFullNameInput) withdrawalFullNameInput.value = '';
-        if (withdrawalIfscCodeInput) withdrawalIfscCodeInput.value = '';
-        if (withdrawalAccountNumberInput) withdrawalAccountNumberInput.value = '';
-        if (withdrawalImpsAmountInput) withdrawalImpsAmountInput.value = '';
-        if (withdrawalUsdtAmountInput) withdrawalUsdtAmountInput.value = '';
-        if (withdrawalUsdtAddressInput) withdrawalUsdtAddressInput.value = '';
-
-        const userBankDetailsRef = ref(database, `users/${currentUserId}/bankDetails`);
-        get(userBankDetailsRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const bankDetails = snapshot.val();
-                if(withdrawalFullNameInput) withdrawalFullNameInput.value = bankDetails.fullName || '';
-                if(withdrawalIfscCodeInput) withdrawalIfscCodeInput.value = bankDetails.ifscCode || '';
-                if(withdrawalAccountNumberInput) withdrawalAccountNumberInput.value = bankDetails.accountNumber || '';
-            }
-        }).catch(error => console.error("Error fetching bank details:", error));
-    }
-
     // Modal Logic
     if (openWithdrawModalButton) {
         openWithdrawModalButton.onclick = function() {
-            // Show the INR notice modal first
-            if (inrNoticeModal) {
-                inrNoticeModal.style.display = "block";
-            } else {
-                // Fallback: if notice modal doesn't exist, open main withdrawal modal
-                console.warn("INR Notice Modal not found. Opening withdrawal modal directly.");
-                showMainWithdrawalModal();
+            if (!currentUserId) {
+                alert("Please log in to withdraw funds.");
+                return;
             }
+            withdrawalModal.style.display = "block";
+            impsNeftForm.style.display = "block";
+            usdtTrc20Form.style.display = "none";
+            selectImpsNeftBtn.classList.add('active');
+            selectUsdtTrc20Btn.classList.remove('active');
+            withdrawalImpsAmountInput.value = '';
+            withdrawalUsdtAmountInput.value = '';
+            withdrawalUsdtAddressInput.value = '';
+
+            const userBankDetailsRef = ref(database, `users/${currentUserId}/bankDetails`);
+            get(userBankDetailsRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const bankDetails = snapshot.val();
+                    if(withdrawalFullNameInput) withdrawalFullNameInput.value = bankDetails.fullName || '';
+                    if(withdrawalIfscCodeInput) withdrawalIfscCodeInput.value = bankDetails.ifscCode || '';
+                    if(withdrawalAccountNumberInput) withdrawalAccountNumberInput.value = bankDetails.accountNumber || '';
+                }
+            }).catch(error => console.error("Error fetching bank details:", error));
         }
     }
 
-    // Event listener for the new INR notice modal's close button
-    if (closeInrNoticeBtnModal) {
-        closeInrNoticeBtnModal.onclick = function() {
-            if (inrNoticeModal) inrNoticeModal.style.display = "none";
-        }
-    }
-
-    // Event listener for the "Acknowledge & Proceed" button in the INR notice modal
-    if (acknowledgeInrNoticeBtn) {
-        acknowledgeInrNoticeBtn.onclick = function() {
-            if (inrNoticeModal) inrNoticeModal.style.display = "none";
-            showMainWithdrawalModal(); // Now show the main withdrawal modal
-        }
-    }
-
-    // Existing close button for the main withdrawal modal
     if (closeWithdrawModalBtn) {
         closeWithdrawModalBtn.onclick = function() {
-            if (withdrawalModal) withdrawalModal.style.display = "none";
+            withdrawalModal.style.display = "none";
         }
     }
 
-    // Modified window.onclick to handle closing both modals when clicking outside
     window.onclick = function(event) {
         if (event.target == withdrawalModal) {
-            if (withdrawalModal) withdrawalModal.style.display = "none";
-        }
-        if (event.target == inrNoticeModal) { 
-            if (inrNoticeModal) inrNoticeModal.style.display = "none";
+            withdrawalModal.style.display = "none";
         }
     }
 
@@ -708,11 +657,12 @@
 
             await update(userRef, {
                 withdrawalAvailable: parseFloat(newCombinedBalance.toFixed(2)),
-                usdtBalance: parseFloat(newCombinedBalance.toFixed(2)) 
+                usdtBalance: parseFloat(newCombinedBalance.toFixed(2))
             });
 
             alert(`Withdrawal request for ${amount} ${withdrawalData.currency} submitted successfully!`);
-            if(withdrawalModal) withdrawalModal.style.display = "none";
+            withdrawalModal.style.display = "none";
+            // Call to fetchTransactionHistory removed
             updateWalletData(currentUserId);
 
         } catch (error) {
