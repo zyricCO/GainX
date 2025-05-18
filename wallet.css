@@ -1,942 +1,327 @@
-/* wallet.css - Dark Wallet Theme - Enhanced for Fluid Responsiveness - Casual Colors */
+/* css/withdrawal-history-light-revised.css */
 
-:root {
-  /* Dark Theme Palette (Base) */
-  --background-dark: #121212;
-  --background-navbar: #1a1d21;
-  --background-card: #1e1f24;
-  --background-card-secondary: #24262d;
-  --background-slideout: #1c1e22;
-  --background-input-dark: #2b2e35;
-
-  --text-primary-darktheme: #e0e0e0;
-  --text-secondary-darktheme: #a0a0a0;
-  --text-headings-darktheme: #ffffff;
-
-  --border-darktheme: #333740;
-  --border-table-darktheme: #2c2f36;
-
-  /* Casual Theme Accents */
-  --accent-primary: #F5A623; /* Main actions, formerly Green. Now a friendly orange. */
-  --accent-primary-hover: #E08E0B;
-  --accent-secondary: #48C9B0; /* Secondary actions/links, formerly Blue. Now a vibrant teal. */
-  --accent-secondary-hover: #36A58E;
-  --accent-destructive: #E57373; /* Destructive actions, formerly Red. Now a slightly softer red. */
-  --accent-destructive-hover: #C62828;
-
-  /* NEW Light Blue Accent for specific buttons */
-  --accent-lightblue: #ADD8E6;       /* Light Blue */
-  --accent-lightblue-hover: #9BC4D2;  /* Slightly darker/desaturated Light Blue for hover */
-  --accent-lightblue-text: #000000;   /* Black text for better contrast on light blue */
-
-  --accent-transaction-positive: #69D271; /* E.g., Deposit, formerly Teal. Now a fresh green. */
-  --accent-transaction-positive-hover: #57B860;
-  --accent-transaction-neutral: #FFD166;  /* E.g., Withdraw, formerly Orange. Now a warm yellow. */
-  --accent-transaction-neutral-hover: #FFC336;
-
-  /* RGB versions for box-shadows with opacity */
-  --accent-primary-rgb: 245, 166, 35;
-  --accent-secondary-rgb: 72, 201, 176;
-  --accent-destructive-rgb: 229, 115, 115;
-  --accent-lightblue-rgb: 173, 216, 230; /* RGB for Light Blue */
-  --accent-transaction-positive-rgb: 105, 210, 113;
-  --accent-transaction-neutral-rgb: 255, 209, 102;
-
-
-  /* Status Colors (Casual Palette) */
-  --status-completed-text: var(--accent-transaction-positive);
-  --status-completed-bg: rgba(var(--accent-transaction-positive-rgb), 0.15);
-  --status-completed-border: rgba(var(--accent-transaction-positive-rgb), 0.4);
-  --status-pending-text: var(--accent-transaction-neutral);
-  --status-pending-bg: rgba(var(--accent-transaction-neutral-rgb), 0.15);
-  --status-pending-border: rgba(var(--accent-transaction-neutral-rgb), 0.4);
-  --status-failed-text: var(--accent-destructive);
-  --status-failed-bg: rgba(var(--accent-destructive-rgb), 0.15);
-  --status-failed-border: rgba(var(--accent-destructive-rgb), 0.4);
-  --status-processing-text: var(--accent-secondary);
-  --status-processing-bg: rgba(var(--accent-secondary-rgb), 0.15);
-  --status-processing-border: rgba(var(--accent-secondary-rgb), 0.4);
-
-  --modal-overlay-dark: rgba(0,0,0,0.75);
-
-  /* Base font size for rem calculation, can be overridden in media queries */
-  --base-font-size: 16px;
+/* 1. GLOBAL STYLES & RESETS */
+html {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Apply base font size to html for rem unit scaling */
-html {
-  font-size: var(--base-font-size);
-  scroll-behavior: smooth;
+*, *::before, *::after {
+  box-sizing: inherit;
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  margin: 0;
-  background-color: var(--background-dark);
-  color: var(--text-primary-darktheme);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   line-height: 1.6;
-  font-size: 1rem; /* Body font size based on html's font-size */
-  display: flex; /* For sticky footer */
-  flex-direction: column; /* For sticky footer */
-  min-height: 100vh; /* For sticky footer */
-}
-
-/* Navbar styles */
-.navbar {
+  margin: 0;
+  padding: 0;
+  background-color: #f4f7f9; /* Light grey background */
+  color: #333333; /* Dark grey default text */
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 0.625rem clamp(1rem, 2.5vw, 1.5625rem);
-  background-color: var(--background-navbar);
-  border-bottom: 1px solid var(--border-darktheme);
+  min-height: 100vh;
 }
 
-.navbar #logo {
-  height: clamp(2rem, 5vw, 2.5rem);
-}
-.navbar h2 {
-    margin-left: 0.75rem;
-    font-weight: 700;
-    color: var(--text-headings-darktheme);
-    font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+::selection {
+  background-color: #007bff; /* Standard blue selection */
+  color: #ffffff;
 }
 
-.navbar-user-actions {
-  display: flex;
-  align-items: center;
+/* 2. LAYOUT CONTAINER */
+.dashboard-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 25px 30px;
+  background-color: #ffffff; /* White container background */
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Softer shadow for light theme */
+  border: 1px solid #e0e0e0; /* Light border for definition */
 }
 
-#userEmailWallet {
-  margin-right: 1.25rem;
+/* 3. TYPOGRAPHY */
+h1 {
+  font-size: 2.0rem;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 30px;
+  color: #2c3e50; /* Dark blue-grey for heading */
   font-weight: 600;
-  color: var(--text-primary-darktheme);
-  font-size: clamp(0.875rem, 1.8vw, 1rem);
+  letter-spacing: 0.25px;
 }
 
-.hamburger-menu {
-    cursor: pointer;
-    padding: 0.3125rem;
-}
-.hamburger-menu .line {
-  width: 1.5625rem;
-  height: 0.1875rem;
-  background-color: var(--text-primary-darktheme);
-  margin: 0.3125rem 0;
-  border-radius: 0.1875rem;
-  transition: background-color 0.2s;
-}
-
-/* Slide-out Menu Styles */
-.slide-out-menu {
-  position: fixed;
-  top: 0;
-  right: -280px;
-  width: clamp(240px, 70vw, 280px);
-  max-width: 100%;
-  height: 100%;
-  background-color: var(--background-slideout);
-  box-shadow: -3px 0 15px rgba(0, 0, 0, 0.25);
-  padding-top: 4.375rem;
-  transition: right 0.3s ease;
-  z-index: 1000;
-  overflow-y: auto;
-}
-
-.slide-out-menu.show {
-  right: 0;
-}
-
-.slide-out-menu button {
-    display: block; /* Changed from flex to block to ensure full width usage */
-    width: calc(100% - 1.875rem); /* Adjusted to account for margins */
-    padding: 0.875rem 1.25rem;
-    margin: 0.625rem auto; /* Center button if width is less than 100% */
-    text-align: left;
-    cursor: pointer;
-    font-size: 1rem; /* Base font size */
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-darktheme);
-    color: var(--text-primary-darktheme);
-    border-radius: 0.375rem;
-    font-weight: 500;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-
-    /* For aligning icon and text if using HTML structure like: <img ...> Text */
-    display: flex;
-    align-items: center;
-}
-.slide-out-menu button .menu-icon { /* Ensure this class is on your img tags in the menu buttons */
-  width: 20px; /* Or your desired size */
-  height: 20px; /* Or your desired size */
-  margin-right: 10px;
-}
-
-.slide-out-menu button:hover {
-    background-color: var(--background-input-dark);
-    border-color: var(--accent-secondary);
-    color: var(--text-headings-darktheme);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.slide-out-menu button:focus-visible {
-    outline: none;
-    border-color: var(--accent-secondary-hover);
-    box-shadow: 0 0 0 2px rgba(var(--accent-secondary-rgb), 0.3);
-}
-
-.slide-out-menu button.logout-button {
-    background-color: var(--accent-destructive);
-    border-color: var(--accent-destructive);
-    color: white;
-    font-weight: 600;
-}
-.slide-out-menu button.logout-button:hover {
-    background-color: var(--accent-destructive-hover);
-    border-color: var(--accent-destructive-hover);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.slide-out-menu button.logout-button:focus-visible {
-    outline: none;
-    border-color: var(--accent-destructive-hover);
-    box-shadow: 0 0 0 2px rgba(var(--accent-destructive-rgb), 0.3);
-}
-
-/* Wallet Page Specific Container */
-.wallet-container {
-  padding: clamp(1.25rem, 4vw, 1.875rem);
-  max-width: 900px;
-  margin: clamp(1.25rem, 5vh, 2.5rem) auto;
-  background-color: var(--background-card);
-  border-radius: 0.75rem;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  border: 1px solid var(--border-darktheme);
-  flex-grow: 1; /* For sticky footer: allows this container to grow and push footer down */
-}
-
-.wallet-container h1 {
-    color: var(--text-headings-darktheme);
-    border-bottom: 2px solid var(--accent-primary);
-    padding-bottom: clamp(0.625rem, 2vw, 0.9375rem);
-    margin-top: 0;
-    margin-bottom: clamp(1.5rem, 4vw, 2.1875rem);
-    font-size: clamp(1.7rem, 4.5vw, 2.2rem);
-}
-
-/* Data Section Styling */
-.data-section {
-  background-color: var(--background-card-secondary);
-  padding: clamp(1rem, 3vw, 1.5625rem);
-  margin-bottom: clamp(1.25rem, 4vw, 1.875rem);
-  border-radius: 0.5rem;
-  border: 1px solid var(--border-darktheme);
-}
-.data-section h3 {
-    margin-top: 0;
-    color: var(--text-headings-darktheme);
-    font-size: clamp(1.3rem, 3.5vw, 1.6rem);
-    border-bottom: 1px solid var(--border-darktheme);
-    padding-bottom: clamp(0.5rem, 2vw, 0.9375rem);
-    margin-bottom: clamp(1rem, 3vw, 1.5625rem);
-}
-.data-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: clamp(0.75rem, 2vw, 1.125rem);
-    font-size: clamp(0.95rem, 2vw, 1.1rem);
-    color: var(--text-secondary-darktheme);
-}
-.data-item strong {
-    min-width: 230px;
-    color: var(--text-primary-darktheme);
-    font-weight: 600;
-    margin-right: 0.5rem;
-}
-.currency-icon {
-    width: 1.2em; /* Use em for scaling with font size */
-    height: 1.2em; /* Use em for scaling with font size */
-    margin-right: 0.5em;
-    vertical-align: middle; /* Better for inline or flex alignment */
-}
-.data-item span {
-    font-weight: 700;
-    color: var(--text-headings-darktheme);
-    word-break: break-all;
-}
-.token-usdt-value { /* Style for the (USDT value) span */
-    font-size: 0.9em;
-    color: var(--text-secondary-darktheme);
-    margin-left: 4px;
-}
-
-
-/* Transaction History Table */
-.transaction-history-table-wrapper {
+/* 4. TABLE STYLES - REVISED */
+.table-responsive-wrapper {
+  width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin-top: clamp(1rem, 3vw, 1.5625rem);
-  border: 1px solid var(--border-table-darktheme);
-  border-radius: 0.375rem;
-  background-color: var(--background-card-secondary);
+  margin-bottom: 30px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
 }
-.transaction-history-table {
+
+.withdrawal-history-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 650px; /* Adjusted min-width */
+  /* table-layout: fixed; /* Uncomment if you want fixed column widths */
 }
-.transaction-history-table th,
-.transaction-history-table td {
-  border-bottom: 1px solid var(--border-table-darktheme);
-  padding: clamp(0.625rem, 1.5vw, 0.875rem) clamp(0.75rem, 2vw, 1.125rem);
+
+.withdrawal-history-table th,
+.withdrawal-history-table td {
+  padding: 12px 15px; /* Adjusted padding */
   text-align: left;
+  font-size: 0.88rem; /* Slightly adjusted font size */
   vertical-align: middle;
-  white-space: nowrap;
-}
-.transaction-history-table th:first-child,
-.transaction-history-table td:first-child {
-    padding-left: clamp(0.75rem, 2vw, 1.25rem);
-}
-.transaction-history-table th:last-child,
-.transaction-history-table td:last-child {
-    padding-right: clamp(0.75rem, 2vw, 1.25rem);
-}
-.transaction-history-table th {
-  background-color: rgba(40, 42, 48, 0.5); /* Slightly darker/more opaque header */
-  font-weight: 600;
-  color: var(--text-primary-darktheme);
-  text-transform: uppercase;
-  font-size: 0.875rem; /* Slightly larger for readability */
-  letter-spacing: 0.5px;
-}
-.transaction-history-table tr {
-    background-color: var(--background-card-secondary); /* Base for rows */
-    transition: background-color 0.2s ease;
-}
-.transaction-history-table tr:nth-child(even) {
-  background-color: var(--background-card); /* Slightly different for zebra striping */
-}
-.transaction-history-table tr:hover {
-  background-color: var(--border-darktheme); /* Darker hover for better feedback */
-}
-.transaction-history-table td {
-    color: var(--text-secondary-darktheme);
-}
-.transaction-history-table td:nth-child(3) { /* Example: Style for a specific column like 'Amount' */
-    color: var(--text-primary-darktheme);
-}
-.transaction-history-table td:nth-child(4) { /* Example: Style for another specific column */
-    font-weight: 600;
-    color: var(--text-primary-darktheme);
+  border-bottom: 1px solid #e9ecef; /* Lighter border for rows */
+  border-left: none;
+  border-right: none;
 }
 
-/* Status Badges in Table */
-.transaction-history-table td .status {
-    padding: clamp(0.25rem, 1vw, 0.375rem) clamp(0.5rem, 2vw, 0.75rem);
-    border-radius: 1rem; /* More pill-like */
-    font-size: clamp(0.7rem, 1.5vw, 0.85rem);
-    font-weight: 600;
-    text-transform: capitalize;
-    display: inline-block;
-    min-width: 5rem; /* Minimum width to maintain shape */
-    text-align: center;
-    border: 1px solid transparent; /* Base border */
-}
-.status-completed { color: var(--status-completed-text); background-color: var(--status-completed-bg); border-color: var(--status-completed-border); }
-.status-pending { color: var(--status-pending-text); background-color: var(--status-pending-bg); border-color: var(--status-pending-border); }
-.status-failed { color: var(--status-failed-text); background-color: var(--status-failed-bg); border-color: var(--status-failed-border); }
-.status-processing { color: var(--status-processing-text); background-color: var(--status-processing-bg); border-color: var(--status-processing-border); }
-.status-unknown { color: var(--text-secondary-darktheme); background-color: rgba(128, 128, 128, 0.1); border-color: rgba(128, 128, 128, 0.3); }
-
-
-.no-transactions {
-    text-align: center;
-    padding: clamp(1.25rem, 4vw, 1.875rem);
-    color: var(--text-secondary-darktheme);
-    font-style: italic;
-    background-color: var(--background-card-secondary); /* Match section background */
+/* Column specific alignments and widths (optional, adjust as needed) */
+.withdrawal-history-table th:nth-child(1), /* Amount */
+.withdrawal-history-table td:nth-child(1) {
+  /* width: 20%; */ /* Example width */
+  padding-left: 20px;
 }
 
-
-/* Button Container and Button Styling */
-.button-container {
-    margin-top: clamp(1.25rem, 4vw, 1.875rem);
-    margin-bottom: clamp(1rem, 3vw, 1.5625rem);
-    display: flex;
-    flex-wrap: wrap;
-    gap: clamp(0.5rem, 1.5vw, 0.75rem);
-    align-items: center;
+.withdrawal-history-table th:nth-child(2), /* Details */
+.withdrawal-history-table td:nth-child(2) {
+  /* width: 50%; */ /* Example width */
 }
 
-/* Base style for all buttons in the container */
-.button-container button,
-.button-container .view-history-button,
-.button-container a.dashboard-link {
-    display: inline-flex; /* Aligns text and potential icons nicely */
-    align-items: center;
-    justify-content: center;
-    padding: clamp(0.625rem, 1.8vw, 0.75rem) clamp(1rem, 2.2vw, 1.25rem);
-    box-sizing: border-box;
-    border: 1px solid transparent; /* Base border, will be overridden by specific styles */
-    /* color: white; Default text color removed from here, will be set by specific button types */
-    border-radius: 0.375rem; /* Standardized border radius */
-    text-decoration: none;
-    font-family: inherit; /* Use body font */
-    font-size: clamp(0.9rem, 2vw, 1rem);
-    font-weight: 600;
-    line-height: 1.4; /* Ensure text is vertically centered */
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
+.withdrawal-history-table th:nth-child(3), /* Status */
+.withdrawal-history-table td:nth-child(3) {
+  /* width: 30%; */ /* Example width */
+  text-align: right; /* Align text/content to the right for the status column header */
+  padding-right: 20px;
 }
 
-.button-container button:hover,
-.button-container .view-history-button:hover,
-.button-container a.dashboard-link:hover {
-    transform: translateY(-2px); /* Slight lift on hover */
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15); /* Enhanced shadow on hover */
-}
-.button-container button:active,
-.button-container .view-history-button:active,
-.button-container a.dashboard-link:active {
-    transform: translateY(0px); /* Reset lift on active */
-    box-shadow: 0 1px 2px rgba(0,0,0,0.12); /* Slightly less shadow on active */
-}
-
-/* Primary Button Style (Orange) - General buttons NOT Deposit/Withdraw */
-.button-container button:not(#openWithdrawModalButton):not(.deposit-button),
-.button-container .view-history-button { /* Targets general/primary buttons */
-    background-color: var(--accent-primary);
-    color: white; /* Text color for primary solid buttons */
-    border-color: var(--accent-primary);
-}
-.button-container button:not(#openWithdrawModalButton):not(.deposit-button):hover,
-.button-container .view-history-button:hover {
-    background-color: var(--accent-primary-hover);
-    border-color: var(--accent-primary-hover);
-}
-.button-container button:not(#openWithdrawModalButton):not(.deposit-button):active,
-.button-container .view-history-button:active {
-    background-color: var(--accent-primary-hover); /* Keep hover color on active */
-    border-color: var(--accent-primary-hover);
-}
-.button-container button:not(#openWithdrawModalButton):not(.deposit-button):focus-visible,
-.button-container .view-history-button:focus-visible {
-    outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.3), 0 1px 3px rgba(0,0,0,0.1);
-}
-
-/* Deposit Button (Light Blue) */
-.button-container .deposit-button {
-    background-color: var(--accent-lightblue);
-    color: var(--accent-lightblue-text); /* Using specific text color for light blue */
-    border-color: var(--accent-lightblue);
-}
-.button-container .deposit-button:hover {
-    background-color: var(--accent-lightblue-hover);
-    border-color: var(--accent-lightblue-hover);
-    color: var(--accent-lightblue-text);
-}
-.button-container .deposit-button:active {
-    background-color: var(--accent-lightblue-hover);
-    border-color: var(--accent-lightblue-hover);
-    color: var(--accent-lightblue-text);
-}
-.button-container .deposit-button:focus-visible {
-    outline: none;
-    border-color: var(--accent-lightblue);
-    box-shadow: 0 0 0 3px rgba(var(--accent-lightblue-rgb), 0.4), 0 1px 3px rgba(0,0,0,0.1);
-}
-
-/* Withdraw Modal Button (Light Blue) */
-#openWithdrawModalButton {
-    background-color: var(--accent-lightblue);
-    color: var(--accent-lightblue-text); /* Using specific text color for light blue */
-    border-color: var(--accent-lightblue);
-}
-#openWithdrawModalButton:hover {
-    background-color: var(--accent-lightblue-hover);
-    border-color: var(--accent-lightblue-hover);
-    color: var(--accent-lightblue-text);
-}
-#openWithdrawModalButton:active {
-    background-color: var(--accent-lightblue-hover);
-    border-color: var(--accent-lightblue-hover);
-    color: var(--accent-lightblue-text);
-}
-#openWithdrawModalButton:focus-visible {
-    outline: none;
-    border-color: var(--accent-lightblue);
-    box-shadow: 0 0 0 3px rgba(var(--accent-lightblue-rgb), 0.4), 0 1px 3px rgba(0,0,0,0.1);
-}
-
-/* Secondary/Info Button Style (Teal - Outline) - MODIFIED FOR STANDARD PATTERN */
-.button-container a.dashboard-link {
-    background-color: transparent;
-    color: var(--accent-secondary);
-    border: 1px solid var(--accent-secondary); /* Explicitly set border */
-}
-.button-container a.dashboard-link:hover {
-    background-color: var(--accent-secondary);
-    color: white;
-    border-color: var(--accent-secondary);
-}
-.button-container a.dashboard-link:active {
-    background-color: var(--accent-secondary-hover);
-    color: white;
-    border-color: var(--accent-secondary-hover);
-}
-.button-container a.dashboard-link:focus-visible {
-    outline: none;
-    border-color: var(--accent-secondary-hover); /* Keep border distinct on focus */
-    box-shadow: 0 0 0 3px rgba(var(--accent-secondary-rgb), 0.3), 0 1px 3px rgba(0,0,0,0.1);
-    /* If needed, force background for focus on outline buttons:
-    background-color: rgba(var(--accent-secondary-rgb), 0.1); /* Slight tint on focus */
-}
-
-
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000; /* Ensure modal is on top */
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto; /* Enable scroll if modal content is too long */
-  background-color: var(--modal-overlay-dark); /* Use variable for overlay */
-  font-family: "Inter", sans-serif; /* Match body font */
-}
-
-.modal-content {
-  background-color: var(--background-card); /* Use card background for modal */
-  margin: 10% auto; /* Centering with margin from top */
-  padding: clamp(1.25rem, 4vw, 1.875rem);
-  border: 1px solid var(--border-darktheme);
-  width: 85%; /* Responsive width */
-  max-width: 550px; /* Max width to prevent it from being too wide on large screens */
-  border-radius: 0.625rem; /* Standardized border radius */
-  position: relative; /* For positioning close button */
-  box-shadow: 0 5px 20px rgba(0,0,0,0.35); /* Softer shadow for depth */
-}
-
-.modal-content h2 {
-    margin-top: 0;
-    color: var(--text-headings-darktheme);
-    text-align: center;
-    margin-bottom: clamp(1rem, 3vw, 1.5625rem);
-    font-size: clamp(1.3rem, 3.5vw, 1.75rem);
-}
-.modal-content h4 {
-    margin-top: clamp(0.75rem, 2.5vw, 1.25rem);
-    margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
-    color: var(--text-primary-darktheme); /* Primary text for subheadings */
-    border-bottom: 1px solid var(--border-darktheme);
-    padding-bottom: clamp(0.375rem, 1vw, 0.5rem);
-    font-size: clamp(1rem, 2.2vw, 1.2rem);
-}
-
-.close-button {
-  color: var(--text-secondary-darktheme);
-  position: absolute;
-  top: 0.9375rem; /* Position from top */
-  right: 1.25rem; /* Position from right */
-  font-size: 1.875rem; /* Make it a bit larger */
-  font-weight: bold;
-  line-height: 1; /* Ensure it's centered vertically */
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-.close-button:hover,
-.close-button:focus {
-  color: var(--accent-destructive); /* Use destructive accent for close */
-  text-decoration: none;
-  cursor: pointer;
-  transform: scale(1.1); /* Slight scale effect on hover/focus */
-}
-.close-button:active {
-    transform: scale(1.05); /* Slightly less scale on active */
-    color: var(--accent-destructive-hover);
-}
-.close-button:focus-visible { /* Clearer focus state */
-    color: var(--accent-destructive);
-    transform: scale(1.1);
-    outline: 2px solid var(--accent-destructive);
-    outline-offset: 2px;
-}
-
-
-.withdrawal-options {
-  margin-bottom: clamp(1rem, 3vw, 1.5625rem);
+/* Styling for the cell containing the status pill */
+.withdrawal-history-table td:nth-child(3) {
   display: flex;
-  gap: clamp(0.5rem, 1.5vw, 0.625rem);
-  justify-content: center;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  justify-content: flex-end; /* Aligns pill to the right */
+  align-items: center;      /* Vertically centers pill in the cell */
 }
 
-.withdrawal-option-btn {
-  padding: clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.875rem, 2vw, 1.125rem);
-  border: 1px solid var(--border-darktheme);
-  background-color: var(--background-card-secondary); /* Slightly different from modal bg */
-  color: var(--text-primary-darktheme);
-  cursor: pointer;
-  border-radius: 0.375rem;
-  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+
+.withdrawal-history-table tr td:last-child,
+.withdrawal-history-table tr th:last-child {
+    /* Ensures padding is consistently applied if it's not the status column */
+    /* padding-right: 20px; // Already handled by individual column rules */
+}
+
+
+.withdrawal-history-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase; /* Kept uppercase for headers */
+  letter-spacing: 0.4px; /* Adjusted letter spacing */
+  border-top: none;
+  border-bottom: 2px solid #dee2e6; /* Stronger border for header bottom */
+}
+
+.withdrawal-history-table tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.withdrawal-history-table tbody tr:nth-of-type(even) {
+  background-color: transparent; /* Removed striping for a cleaner look like the image */
+}
+.withdrawal-history-table tbody tr:hover {
+  background-color: #f1f3f5; /* Slightly more noticeable hover */
+}
+ .withdrawal-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.details-cell span {
+    display: block;
+    line-height: 1.45; /* Adjusted line-height */
+    margin-bottom: 3px; /* Adjusted margin */
+    font-size: 0.82rem; /* Slightly smaller for details */
+    color: #555;
+}
+.details-cell span:first-child {
+    color: #333; /* Make account number slightly more prominent */
+    font-weight: 500;
+}
+.details-cell span:last-child {
+    margin-bottom: 0;
+}
+
+/* 5. STATUS INDICATOR PILLS - NEW COLOR THEME */
+.status-pending,
+.status-completed, .status-success,
+.status-processed,
+.status-failed, .status-rejected,
+.status-na {
+  box-sizing: border-box;
+  padding: 4px 12px;    /* Slightly reduced vertical padding, increased horizontal */
+  border-radius: 12px;  /* Standardized pill rounding */
   font-weight: 500;
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
-}
-.withdrawal-option-btn:hover {
-    background-color: var(--border-darktheme); /* Darken on hover */
-    border-color: var(--accent-secondary); /* Use secondary accent for hover border */
-    color: var(--text-headings-darktheme); /* Brighter text on hover */
-}
-.withdrawal-option-btn.active {
-  background-color: var(--accent-secondary); /* Active state uses secondary accent */
-  color: white; /* Ensure contrast */
-  border-color: var(--accent-secondary);
-  font-weight: 600;
-  box-shadow: 0 0 0 2px rgba(var(--accent-secondary-rgb),0.1); /* Subtle glow */
-}
-.withdrawal-option-btn:focus-visible {
-    outline: none;
-    border-color: var(--accent-secondary-hover);
-    box-shadow: 0 0 0 2px rgba(var(--accent-secondary-rgb), 0.3);
-}
-.withdrawal-option-btn.active:focus-visible {
-    outline: none;
-    border-color: var(--accent-secondary-hover);
-    box-shadow: 0 0 0 3px rgba(var(--accent-secondary-rgb), 0.4), 0 0 0 2px rgba(var(--accent-secondary-rgb),0.1);
-}
-
-
-.withdrawal-form label {
-  display: block;
-  margin-top: clamp(0.625rem, 2vw, 0.9375rem);
-  margin-bottom: clamp(0.375rem, 1vw, 0.5rem);
-  font-weight: 600;
-  color: var(--text-secondary-darktheme); /* Softer color for labels */
-  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
-}
-
-.withdrawal-form input[type="text"],
-.withdrawal-form input[type="number"] {
-  width: 100%; /* Full width */
-  box-sizing: border-box; /* Include padding and border in width */
-  padding: 0.75rem; /* Comfortable padding */
-  margin-bottom: clamp(0.75rem, 2vw, 1.125rem);
-  border: 1px solid var(--border-darktheme);
-  background-color: var(--background-input-dark); /* Dark input background */
-  color: var(--text-primary-darktheme);
-  border-radius: 0.375rem;
-  font-size: 1rem; /* Ensure readability */
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.withdrawal-form input[type="text"]:focus,
-.withdrawal-form input[type="number"]:focus {
-    border-color: var(--accent-secondary); /* Highlight with secondary accent on focus */
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(var(--accent-secondary-rgb), 0.15); /* Subtle glow on focus */
-}
-.withdrawal-form input::placeholder {
-    color: var(--text-secondary-darktheme);
-    opacity: 0.7; /* Make placeholder slightly less prominent */
-}
-
-.withdrawal-form button {
-  background-color: var(--accent-primary); /* Primary accent for submit */
-  color: white;
-  padding: clamp(0.75rem, 2vw, 0.875rem) clamp(1rem, 2.5vw, 1.375rem);
-  border: 1px solid var(--accent-primary); /* Consistent with other primary buttons */
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-top: clamp(1rem, 2.5vw, 1.25rem); /* Space above button */
-  width: 100%; /* Full width button */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-.withdrawal-form button:hover {
-  background-color: var(--accent-primary-hover);
-  border-color: var(--accent-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-}
-.withdrawal-form button:active {
-  background-color: var(--accent-primary-hover);
-  border-color: var(--accent-primary-hover);
-  transform: translateY(0px);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
-}
-.withdrawal-form button:focus-visible {
-    outline: none;
-    border-color: var(--accent-primary);
-    background-color: var(--accent-primary-hover); /* Keep hover bg for focus */
-    box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.3), 0 1px 3px rgba(0,0,0,0.1);
-}
-.withdrawal-form button:disabled {
-    background-color: var(--border-darktheme); /* Muted background for disabled */
-    color: var(--text-secondary-darktheme); /* Muted text */
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-    border-color: var(--border-darktheme);
-}
-
-
-/* ================== */
-/* Footer Styles      */
-/* ================== */
-
-footer {
-  background-color: #0c1f3f; /* Or use a CSS variable like var(--background-footer, #0c1f3f) */
-  color: #f0f0f0; /* Or var(--text-footer-primary, #f0f0f0) */
-  padding: 40px 20px;
-  font-family: "Inter", sans-serif;
-  font-size: 0.875rem; /* 14px */
-  margin-top: auto; /* Part of sticky footer pattern, body needs display:flex, flex-direction:column and main content flex-grow:1 */
-}
-
-footer .footer-container {
-  max-width: 1200px;
-  margin: auto;
-  /* Added for potential logo alignment if you move it here */
-  display: flex;
-  flex-wrap: wrap; /* Allow wrapping for logo + content */
-  align-items: flex-start; /* Align items to the top */
-  gap: 20px; /* Space between logo (if any) and main footer content */
-}
-
-/* If you decide to move the logo into the footer container for better semantic structure */
-/* footer .footer-logo-container {
-  flex-shrink: 0;
-}
-footer #logo { // Assuming the logo ID is unique or you use a class
-  height: clamp(2rem, 5vw, 2.5rem); // Match navbar logo size or adjust
-  display: block; // Remove extra space below img
-  margin-bottom: 10px; // Space below logo if content stacks
-} */
-
-
-footer .footer-content-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  flex-grow: 1; /* Allow this wrapper to take remaining space if logo is present */
-}
-
-footer .footer-section {
-  flex: 1 1 220px; /* Base size, allows shrinking and growing */
-  margin-bottom: 20px;
-  padding: 0 10px; /* Some horizontal padding for spacing between sections */
-}
-
-footer .footer-section.about-section { /* Specific class for the first, wider section */
-    flex-basis: 300px; /* Give it more initial space */
-}
-
-footer h3 {
-  color: #ffffff; /* Or var(--text-footer-headings, #ffffff) */
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.125rem; /* 18px */
-}
-
-footer h4 {
-  color: #ffffff; /* Or var(--text-footer-headings, #ffffff) */
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1rem; /* 16px */
-}
-
-footer p {
-    line-height: 1.6;
-    margin-bottom: 0.625rem; /* 10px */
-}
-footer .footer-section p:first-of-type {
-    margin-bottom: 10px;
-}
-
-footer ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-footer .footer-section ul li {
-    margin-bottom: 8px;
-}
-
-footer .footer-section ul a {
-  color: #ccc; /* Or var(--text-footer-links, #ccc) */
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-footer .footer-section ul a:hover {
-  color: #fff; /* Or var(--text-footer-links-hover, #fff) */
-  text-decoration: underline;
-}
-
-footer hr {
-  border: 0;
-  border-top: 1px solid #444; /* Or var(--border-footer, #444) */
-  margin: 30px 0;
-  width: 100%; /* Ensure hr spans full width of its container */
-}
-
-footer .footer-bottom-text {
+  font-size: 0.75em;   /* Relative to cell font-size */
+  line-height: 1.5;     /* Adjusted line height for pill text */
+  display: inline-block;
   text-align: center;
-  color: #aaa; /* Or var(--text-footer-secondary, #aaa) */
-  width: 100%; /* Ensure it spans full width for centering */
-  font-size: 0.8125rem; /* 13px */
+  min-width: 85px;      /* Adjusted min width for pill consistency */
+  letter-spacing: 0.2px;
+  text-transform: capitalize;
+  border-width: 1px;
+  border-style: solid;
+  vertical-align: middle; /* Good for inline-block elements */
 }
 
-footer .footer-bottom-text p {
-    margin-bottom: 5px;
+/* New Theme Status Pills */
+.status-pending { /* Theme: Lavender/Purple */
+  background-color: #e9e7fd; /* Light Lavender BG */
+  color: #5a4fcf;            /* Medium Purple Text */
+  border-color: #c8c3fc;     /* Lighter Lavender Border */
+}
+.status-completed,
+.status-success { /* Theme: Mint/Teal */
+  background-color: #e0f2f1; /* Light Mint BG */
+  color: #00796b;            /* Dark Teal Text */
+  border-color: #b2dfdb;     /* Light Teal Border */
+}
+.status-processed { /* Theme: Sky Blue/Indigo */
+  background-color: #e3f2fd; /* Very Light Blue BG */
+  color: #1565c0;            /* Medium Blue Text */
+  border-color: #bbdefb;     /* Light Sky Blue Border */
+}
+.status-failed,
+.status-rejected { /* Theme: Coral/Dark Pink */
+  background-color: #fce4ec; /* Light Pink BG */
+  color: #c2185b;            /* Dark Pink/Magenta Text */
+  border-color: #f8bbd0;     /* Light Pink Border */
+}
+.status-na { /* Theme: Warm Grey/Beige */
+  background-color: #f5f5f5; /* Off-White/Very Light Beige BG */
+  color: #757575;            /* Medium Grey Text */
+  border-color: #e0e0e0;     /* Light Grey Border */
 }
 
 
-/* --- Responsive adjustments --- */
-
-@media (max-width: 1024px) {
-  html {
-    --base-font-size: 15px;
-  }
-  .wallet-container {
-    max-width: 90%;
-  }
-  .data-item strong {
-     min-width: clamp(150px, 25vw, 200px);
-  }
-  .modal-content {
-    margin: 12% auto;
-    width: clamp(70%, 85vw, 80%);
-    max-width: 600px; /* Increased max-width slightly for tablets */
-  }
+/* 6. BUTTON STYLES */
+.view-history-button {
+  display: inline-block;
+  padding: 10px 24px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease, box-shadow 0.2s ease;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+.view-history-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 86, 179, 0.4);
+}
+.view-history-button:active {
+  transform: translateY(0px);
+  background-color: #004085;
+  box-shadow: 0 1px 2px rgba(0, 64, 133, 0.3);
 }
 
+/* 7. MEDIA QUERIES */
 @media (max-width: 768px) {
-  html {
-    --base-font-size: 14px;
+  .dashboard-container {
+    width: 95%;
+    padding: 20px 15px;
+    margin: 20px auto;
   }
-  .navbar h2 {
-    font-size: clamp(1rem, 4vw, 1.25rem);
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 25px;
   }
-  #userEmailWallet {
-    font-size: clamp(0.8rem, 3.5vw, 0.9rem);
-    margin-right: 0.75rem;
+  .withdrawal-history-table th,
+  .withdrawal-history-table td {
+    padding: 10px 8px; /* Reduced padding for smaller screens */
+    font-size: 0.82rem;
   }
+  .withdrawal-history-table th:nth-child(1),
+  .withdrawal-history-table td:nth-child(1) {
+    padding-left: 10px;
+  }
+  .withdrawal-history-table th:nth-child(3),
+  .withdrawal-history-table td:nth-child(3) {
+    padding-right: 10px;
+  }
+   .details-cell span {
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .status-pending, .status-completed, .status-success, .status-processed, .status-failed, .status-rejected, .status-na {
+    font-size: 0.72em; /* Pills scale with cell font */
+    min-width: 75px;
+    padding: 3px 10px;
+  }
+}
 
-  .wallet-container {
-    margin: clamp(1rem, 4vh, 1.5rem) 5%; /* Adjust margin for smaller screens */
-    padding: clamp(1rem, 3vw, 1.25rem);
-    border-radius: 0.625rem;
-    max-width: 90%; /* Ensure it doesn't touch edges */
+@media (max-width: 480px) {
+  body {
+    background-color: #ffffff;
   }
-
-  .data-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .data-item strong {
-    min-width: auto; /* Allow strong tag to not have a min-width */
-    margin-bottom: 0.375rem;
-    margin-right: 0;
-  }
-
-  .button-container {
-    flex-direction: column;
-    align-items: stretch; /* Make buttons full width */
-  }
-  .button-container button,
-  .button-container a.dashboard-link,
-  .button-container .view-history-button,
-  .button-container .deposit-button {
-    width: 100%; /* Full width buttons */
-    margin-bottom: 0.75rem; /* Space between stacked buttons */
-  }
-  .button-container button:last-child,
-  .button-container a.dashboard-link:last-of-type, /* More specific last-of-type */
-  .button-container .view-history-button:last-of-type,
-  .button-container .deposit-button:last-of-type {
-    margin-bottom: 0;
-  }
-
-  .transaction-history-table th,
-  .transaction-history-table td {
-    padding: clamp(0.5rem, 1.2vw, 0.625rem) clamp(0.5rem, 1.5vw, 0.75rem);
-    white-space: normal; /* Allow text to wrap in table cells on small screens */
-  }
-   .transaction-history-table th {
-    font-size: 0.8rem;
-   }
-  .transaction-history-table td .status {
-    padding: clamp(0.2rem, 0.8vw, 0.3125rem) clamp(0.375rem, 1.2vw, 0.5rem);
-    font-size: clamp(0.65rem, 1.4vw, 0.75rem);
-    min-width: 4.5rem;
-  }
-
-  .modal-content {
-    margin: clamp(10%, 15vh, 15%) auto; /* Adjust modal margin for very small screens */
-    width: clamp(85%, 90vw, 90%); /* More width for modal on small screens */
-    padding: clamp(1rem, 3vw, 1.25rem);
-  }
-  .withdrawal-options {
-    flex-direction: column;
-  }
-  .withdrawal-option-btn {
+  .dashboard-container {
+    border-radius: 0;
+    margin: 0 auto;
     width: 100%;
-    margin-bottom: 0.5rem; /* Space between stacked option buttons */
-    box-sizing: border-box;
+    padding: 15px 0px; /* Container padding removed, rely on cell padding */
+    min-height: 100vh;
+    box-shadow: none;
+    border: none;
   }
-   .withdrawal-option-btn:last-child {
-    margin-bottom: 0;
+  h1 {
+    font-size: 1.5rem;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding-left: 10px; /* Add padding if container has none */
+    padding-right: 10px;
   }
-
-  /* Footer responsive adjustments */
-  footer .footer-content-wrapper {
-    flex-direction: column;
-    align-items: center; /* Center sections when stacked */
+   .withdrawal-history-table th,
+  .withdrawal-history-table td {
+    font-size: 0.75rem;
+    padding: 8px 5px; /* Further reduced padding */
   }
-
-  footer .footer-section {
-    flex-basis: 100% !important; /* Full width on smaller screens, override flex-basis */
-    max-width: 400px; /* Optional: constrain width of centered content */
-    text-align: center; /* Center text in sections */
-    margin-bottom: 30px;
-    padding: 0; /* Reset padding or adjust as needed */
+  .withdrawal-history-table th:nth-child(1),
+  .withdrawal-history-table td:nth-child(1) {
+    padding-left: 10px; /* Ensure first cell has some left padding */
   }
-   footer .footer-section.about-section {
-    /* any specific overrides for the about section when stacked if needed */
-   }
-
-  footer .footer-section ul {
-      text-align: center; /* Center list items if section is centered */
+  .withdrawal-history-table th:nth-child(3),
+  .withdrawal-history-table td:nth-child(3) {
+    padding-right: 10px; /* Ensure status cell has some right padding for the pill */
   }
-  footer .footer-container { /* Adjust footer container for logo stacking if needed */
-      justify-content: center; /* Center logo if it wraps to its own line */
+  .details-cell span {
+    font-size: 0.7rem;
+    line-height: 1.35;
   }
-  /* footer #logo {
-      margin-left: auto;
-      margin-right: auto;
-  } */
-
-}
-
-/* Custom Scrollbar for Dark Theme (Webkit browsers) */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--background-navbar); /* Match navbar for track */
-  border-radius: 5px;
-}
-::-webkit-scrollbar-thumb {
-  background: #4f5257; /* A neutral dark grey for the thumb */
-  border-radius: 5px;
-  border: 2px solid var(--background-navbar); /* Creates a nice padding effect */
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #686c72; /* Slightly lighter on hover */
-}
+   .status-pending, .status-completed, .status-success, .status-processed, .status-failed, .status-rejected, .status-na {
+    font-size: 0.7em;
+    min-width: 65px;
+    padding: 2px 8px;
+  }
+  .view-history-button {
+    display: block;
+    width: calc(100% - 30px); /* Full width with some margin */
+    margin: 25px auto;
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+  .table-responsive-wrapper {
+     border-left: none;
+     border-right: none;
+     border-radius: 0;
+     border-top: 1px solid #dee2e6;
+     border-bottom: 1px solid #dee2e6;
+     margin-bottom: 20px;
+  }
+  }
+    
