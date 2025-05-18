@@ -1,0 +1,642 @@
+/* Global Styles for Crypto Wallet Theme */
+:root {
+  --text-primary-darktheme: #e0e0e0; /* Added from wallet.css for hamburger menu */
+}
+
+body {
+  font-family: 'Inter', sans-serif; /* Modern, clean font */
+  margin: 0;
+  background-color: #121212; /* Very dark background */
+  color: #e0e0e0; /* Default light text color */
+  line-height: 1.6; /* Improved readability */
+}
+
+/* Navbar and Logo Styles */
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 12px 25px; /* Slightly more padding */
+  background: linear-gradient(to right, #1f1f1f, #2a2a2a); /* Subtle gradient */
+  border-bottom: 1px solid #333; /* Darker, subtle border */
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Subtle shadow */
+}
+
+#logo { /* Navbar logo */
+  height: 35px; /* Slightly smaller logo */
+  width: auto;
+  margin-right: 15px;
+  filter: brightness(1.8); /* Make logo brighter on dark background */
+}
+
+.navbar h2 {
+  margin: 0;
+  font-size: 1.4em; /* Slightly smaller title */
+  color: #00a3ff; /* Vibrant blue accent for title */
+  font-weight: 700; /* Bolder */
+  text-transform: uppercase; /* Crypto feel */
+  letter-spacing: 0.5px;
+}
+
+.navbar-user-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+#userEmail {
+  margin-right: 15px;
+  font-weight: 500; /* Medium weight */
+  color: #b0b0b0; /* Muted text color */
+  font-size: 0.9em;
+}
+
+/* Hamburger Menu Styles - COPIED FROM wallet.css */
+.hamburger-menu {
+    cursor: pointer;
+    padding: 0.3125rem; /* 5px (assuming 16px base font size for rem) */
+    /* Removed z-index: 1002; from original second file as not present in first */
+    /* Removed display:flex, flex-direction, justify-content, width, height from original second file as first file's style is different */
+}
+.hamburger-menu .line {
+  width: 1.5625rem; /* 25px (assuming 16px base font size for rem) */
+  height: 0.1875rem; /* 3px (assuming 16px base font size for rem) */
+  background-color: var(--text-primary-darktheme); /* Uses #e0e0e0 */
+  margin: 0.3125rem 0; /* 5px vertical margin */
+  border-radius: 0.1875rem; /* 3px */
+  transition: background-color 0.2s;
+  /* Removed transition: all 0.3s ease-in-out; and specific width: 100% from original second file */
+}
+
+/* Slide-Out Menu Styles */
+.slide-out-menu {
+  display: none;
+  position: absolute;
+  top: 55px; /* Position below the navbar */
+  right: 15px; /* Aligned with padding */
+  background-color: #1f1f1f; /* Dark background for menu */
+  border: 1px solid #333; /* Darker border */
+  border-top: none;
+  border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+  box-shadow: 0 5px 10px rgba(0,0,0,0.5); /* Stronger shadow */
+  z-index: 1001;
+  width: 200px; /* Slightly wider */
+  overflow: hidden; /* Clean edges */
+}
+
+.slide-out-menu.show {
+  display: block;
+  animation: fadeInFromTopRight 0.3s ease-out forwards; /* Add fade-in animation */
+}
+
+@keyframes fadeInFromTopRight {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+}
+
+
+.slide-out-menu a, /* Style for link-like buttons */
+.slide-out-menu button { /* Style for button-like buttons */
+  display: block;
+  width: 100%; /* Full width */
+  padding: 12px 15px; /* Default padding */
+  background-color: transparent; /* Transparent background by default */
+  color: #e0e0e0; /* Light text */
+  border: none;
+  cursor: pointer;
+  font-size: 1em; /* Slightly larger font */
+  font-weight: 500;
+  text-decoration: none;
+  text-align: left;
+  margin: 0;
+  border-radius: 0;
+  box-sizing: border-box; /* Ensure padding doesn't expand width for icon items */
+  transition: background-color 0.2s ease; /* Smooth hover transition */
+}
+
+.slide-out-menu a:hover,
+.slide-out-menu button:hover {
+  background-color: #2a2a2a; /* Darker on hover */
+}
+
+/* Specific button styles within the menu */
+.slide-out-menu #depositButton {
+  color: #00a3ff; /* Blue accent for deposit */
+  background-image: url('images/icon-depo.png');
+  background-repeat: no-repeat;
+  background-position: 15px center; /* X Y (15px from left, vertically centered) */
+  background-size: 16px 16px; /* Adjust icon size as needed */
+  padding-left: 40px; /* Space for icon: 15px (original left padding area) + 16px (icon width) + 9px (gap to text) */
+}
+
+/* Add class="wallet-link" to your Wallet HTML element in the slide-out menu */
+.slide-out-menu .wallet-link {
+  /* Default text color is #e0e0e0 from the general rule above */
+  background-image: url('images/icon-wallet.png');
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-size: 16px 16px; /* Adjust icon size as needed */
+  padding-left: 40px; /* Space for icon */
+}
+
+.slide-out-menu .logout-button {
+  color: #ff6b6b; /* Red accent for logout */
+  border-top: 1px solid #333; /* Separator line */
+  background-image: url('images/icon-logout.png');
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-size: 16px 16px; /* Adjust icon size as needed */
+  padding-left: 40px; /* Space for icon */
+}
+
+
+/* Dashboard Container */
+.dashboard-container {
+  padding: 20px 25px; /* Adjusted padding */
+  max-width: 1200px;
+  margin: 20px auto; /* Add top margin */
+}
+
+.dashboard-container > h1 {
+  font-size: 2em; /* Larger main heading */
+  color: #e0e0e0; /* Light heading text */
+  margin-bottom: 25px; /* More space below heading */
+  font-weight: 700;
+  text-align: center;
+}
+
+/* About SwiftGain Section Styles */
+.about-swiftgain-section {
+  background-color: #1f1f1f; /* Darker section background */
+  padding: 30px; /* More padding */
+  margin-bottom: 30px;
+  border-radius: 10px; /* More rounded corners */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4); /* Stronger shadow */
+  text-align: center;
+}
+
+.about-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px; /* More space */
+}
+
+.about-section-logo {
+  height: 50px; /* Larger logo */
+  width: auto;
+  margin-right: 15px;
+  filter: brightness(1.8); /* Make logo brighter */
+}
+
+.about-swiftgain-section .section-title {
+  font-size: 2.5em; /* Larger title */
+  color: #00a3ff; /* Blue accent */
+  margin: 0;
+  font-weight: 800; /* Extra bold */
+}
+
+.about-swiftgain-section .trademark {
+  font-size: 0.6em;
+  vertical-align: super;
+  margin-left: 3px;
+  color: #b0b0b0; /* Muted color */
+}
+
+.about-swiftgain-section .slogan {
+  font-size: 1.3em;
+  font-style: italic;
+  color: #00f0ff; /* Cyan accent for slogan */
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.about-swiftgain-section .bio {
+  font-size: 1.1em; /* Slightly larger bio text */
+  color: #cccccc; /* Lighter bio text */
+  line-height: 1.8; /* More line height */
+  text-align: center; /* Centered text */
+  margin-bottom: 25px;
+  max-width: 900px; /* Wider max width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-swiftgain-section .token-value {
+  font-size: 1.6em; /* Larger token value */
+  font-weight: 700;
+  color: #00ff99; /* Green accent for value */
+  margin-top: 20px;
+  padding: 12px 20px; /* More padding */
+  background-color: #0a382a; /* Darker green background */
+  border-radius: 6px; /* More rounded */
+  display: inline-block;
+  letter-spacing: 0.5px;
+}
+
+/* Data Section Styles */
+.data-section {
+  background-color: #1f1f1f; /* Darker section background */
+  padding: 25px; /* More padding */
+  margin-bottom: 25px;
+  border-radius: 10px; /* More rounded corners */
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3); /* Stronger shadow */
+}
+.data-section h3 {
+  margin-top: 0;
+  color: #00a3ff; /* Blue accent for subheadings */
+  font-weight: 700;
+  font-size: 1.3em;
+  margin-bottom: 15px;
+}
+
+.data-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px; /* More space between items */
+  font-size: 1em; /* Standard font size */
+  color: #cccccc; /* Lighter text for data items */
+}
+.data-item strong {
+  min-width: 200px; /* Wider strong text area */
+  display: inline-block;
+  color: #e0e0e0; /* Strong text also light */
+  font-weight: 600;
+}
+
+.currency-icon {
+  width: 22px; /* Slightly larger icons */
+  height: 22px;
+  margin-right: 10px;
+  margin-left: 5px;
+  vertical-align: middle; /* Added for better alignment */
+  filter: brightness(1.5); /* Make icons brighter */
+}
+
+.button-container {
+  margin-top: 25px; /* More space */
+  display: flex;
+  gap: 15px; /* More space between buttons */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  justify-content: center; /* Added to center buttons if they wrap */
+}
+
+.view-history-button, /* This class might be for other pages, keeping it */
+#withdrawButton { /* This ID is used for the main "Withdraw Funds" button */
+  padding: 12px 20px; /* More padding */
+  color: white;
+  text-decoration: none;
+  border-radius: 6px; /* More rounded corners */
+  font-size: 1.1em; /* Slightly larger font */
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth transitions */
+}
+
+/* Styles for general buttons in .button-container if not #withdrawButton */
+.button-container button:not(#withdrawButton),
+.button-container a.dashboard-link { /* Assuming .dashboard-link is an <a> styled as a button */
+  padding: 12px 20px;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 1.1em;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  background-color: #5a6268; /* Default grey for other buttons */
+  text-align: center;
+}
+.button-container button:not(#withdrawButton):hover,
+.button-container a.dashboard-link:hover {
+  background-color: #484e53;
+  transform: translateY(-1px);
+}
+.button-container button:not(#withdrawButton):active,
+.button-container a.dashboard-link:active {
+  transform: translateY(0);
+}
+
+
+.view-history-button { /* Specific style if this class is used */
+  background-color: #5a6268; /* Adjusted grey button */
+}
+.view-history-button:hover {
+  background-color: #484e53; /* Darken on hover */
+  transform: translateY(-1px); /* Subtle lift */
+}
+.view-history-button:active {
+    transform: translateY(0); /* Push down on click */
+}
+
+#withdrawButton { /* Specific style for the main "Withdraw Funds" button */
+  background-color: #00a3ff; /* Blue accent for withdraw */
+}
+#withdrawButton:hover {
+  background-color: #008ae6; /* Darken blue on hover */
+   transform: translateY(-1px); /* Subtle lift */
+}
+#withdrawButton:active {
+    transform: translateY(0); /* Push down on click */
+}
+
+/* Transaction History Table Styles (if applicable to wallet page) */
+.transaction-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.transaction-history-table th,
+.transaction-history-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+    color: #cccccc;
+}
+.transaction-history-table th {
+    background-color: #2a2a2a;
+    color: #00a3ff;
+    font-weight: 600;
+}
+.transaction-history-table tr:last-child td {
+    border-bottom: none;
+}
+.transaction-history-table tr:hover td {
+    background-color: #252525;
+}
+.no-transactions {
+    text-align: center !important; /* Ensure centering */
+    color: #888;
+    padding: 20px !important; /* Ensure padding */
+    font-style: italic;
+}
+.status {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #fff;
+    text-transform: capitalize; /* Nicer display of status */
+}
+.status-pending { background-color: #ffc107; color: #333; }
+.status-completed, .status-approved { background-color: #28a745; } /* Combining completed and approved */
+.status-rejected, .status-failed { background-color: #dc3545; } /* Combining rejected and failed */
+.status-processing { background-color: #007bff; }
+.status-unknown { background-color: #6c757d; }
+
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.8); /* Very dark overlay */
+  backdrop-filter: blur(5px); /* Blurred background */
+}
+
+.modal-content {
+  background: linear-gradient(to bottom right, #1f1f1f, #2a2a2a); /* Subtle gradient */
+  margin: 8% auto; /* Adjusted margin */
+  padding: 30px; /* More padding */
+  border: 1px solid #333; /* Darker border */
+  width: 90%;
+  max-width: 550px; /* Slightly wider */
+  border-radius: 10px; /* More rounded corners */
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5); /* Stronger shadow */
+  color: #e0e0e0; /* Light text in modal */
+  animation: scaleUp 0.3s ease-out forwards; /* Add scale-up animation */
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #00a3ff; /* Blue accent for modal title */
+  font-weight: 700;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* === ADDED/MERGED STYLE FOR MODAL H4 === */
+.modal-content h4 {
+    margin-top: 20px; /* Increased top margin */
+    margin-bottom: 15px; /* Increased bottom margin */
+    color: #00a3ff; /* Accent color consistent with h2 */
+    border-bottom: 1px solid #444; /* Slightly lighter border for subdivision */
+    padding-bottom: 10px; /* More padding below border */
+    font-size: 1.25em; /* Slightly larger */
+    font-weight: 600;
+}
+/* === END ADDED/MERGED STYLE FOR MODAL H4 === */
+
+.close-button {
+  color: #b0b0b0; /* Muted close button */
+  float: right;
+  font-size: 30px; /* Larger close button */
+  font-weight: bold;
+  position: absolute;
+  top: 15px; /* Adjusted position */
+  right: 20px; /* Adjusted position */
+  transition: color 0.2s ease;
+  line-height: 0.7; /* Improved positioning for &times; */
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: #ffffff; /* White on hover/focus */
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* === ADDED/MERGED STYLES FOR WITHDRAWAL OPTION BUTTONS === */
+.withdrawal-options {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  justify-content: center;
+}
+
+.withdrawal-option-btn {
+  padding: 10px 15px;
+  color: #e0e0e0;
+  background-color: #2a2a2a; /* Dark background, similar to inputs */
+  border: 1px solid #555; /* Darker border, similar to inputs */
+  border-radius: 6px; /* Consistent rounded corners */
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  flex-grow: 1; /* Allow buttons to share available space */
+  text-align: center;
+}
+
+.withdrawal-option-btn:hover {
+  background-color: #383838; /* Slightly lighter dark on hover */
+  border-color: #777; /* Lighter border on hover */
+}
+
+.withdrawal-option-btn.active {
+  background-color: #00a3ff; /* Blue accent, matches modal title and focused inputs */
+  color: white; /* White text for active button */
+  border-color: #00a3ff; /* Matching border color */
+}
+/* === END ADDED/MERGED STYLES FOR WITHDRAWAL OPTION BUTTONS === */
+
+.withdrawal-form label {
+  display: block;
+  margin-top: 15px; /* Added consistent margin-top */
+  margin-bottom: 8px; /* Consistent margin-bottom */
+  font-weight: 600;
+  font-size: 1em;
+  color: #cccccc; /* Light label text */
+}
+.withdrawal-form input[type="text"],
+.withdrawal-form input[type="number"] {
+  width: calc(100% - 24px); /* Adjusted width to account for 12px padding on each side */
+  padding: 12px; /* More padding */
+  margin-bottom: 20px; /* More space below input */
+  border: 1px solid #555; /* Darker border */
+  border-radius: 5px; /* Slightly more rounded */
+  font-size: 1em; /* Adjusted font size for consistency */
+  background-color: #2a2a2a; /* Dark input background */
+  color: #e0e0e0; /* Light input text */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.withdrawal-form input[type="text"]:focus,
+.withdrawal-form input[type="number"]:focus {
+    outline: none;
+    border-color: #00a3ff; /* Blue accent on focus */
+    box-shadow: 0 0 8px rgba(0, 163, 255, 0.6); /* Blue glow on focus */
+}
+
+.withdrawal-form input[type="text"]::placeholder,
+.withdrawal-form input[type="number"]::placeholder {
+  color: #888888; /* Lighter placeholder text */
+  font-style: italic;
+  opacity: 0.7; /* Make placeholder slightly more subtle */
+}
+
+.withdrawal-form button[type="submit"] {
+  background-color: #00a3ff; /* Blue accent for submit */
+  color: white;
+  padding: 14px 20px; /* More padding */
+  border: none;
+  border-radius: 6px; /* More rounded */
+  cursor: pointer;
+  font-size: 1.1em; /* Larger font */
+  font-weight: 600;
+  width: 100%;
+  margin-top: 10px; /* Add some space above the submit button */
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.withdrawal-form button[type="submit"]:hover {
+  background-color: #008ae6; /* Darken on hover */
+  transform: translateY(-1px); /* Subtle lift */
+}
+.withdrawal-form button[type="submit"]:active {
+    transform: translateY(0); /* Push down on click */
+}
+
+.error-message {
+  color: #ff6b6b; /* Red accent for errors */
+  margin-bottom: 15px; /* More space */
+  font-size: 0.95em;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px; /* Added padding */
+  background-color: rgba(255, 107, 107, 0.1); /* Added subtle background */
+  border: 1px solid rgba(255, 107, 107, 0.3); /* Added subtle border */
+  border-radius: 5px; /* Added border-radius */
+}
+
+
+/* Styles for the chart container */
+.chart-container {
+  background-color: #1f1f1f; /* Darker chart background */
+  padding: 30px; /* More padding */
+  margin-bottom: 30px;
+  border-radius: 10px; /* More rounded corners */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4); /* Stronger shadow */
+}
+
+.chart-container h3 {
+  text-align: center;
+  margin-bottom: 25px; /* More space */
+  color: #e0e0e0; /* Light chart title */
+  font-weight: 700;
+  font-size: 1.8em;
+}
+
+#tokenValueChart { /* Canvas for the chart */
+  width: 100% !important;
+  height: 400px; /* Slightly taller chart */
+  max-height: 450px;
+}
+
+/* Note for Chart.js styling: You will need to configure the Chart.js options in your JavaScript
+   to match the dark theme. This includes setting colors for labels, grid lines, tooltips,
+   dataset lines/fills, etc. */
+
+/* === ADDED RESPONSIVE STYLES FOR MODAL OPTIONS === */
+@media (max-width: 480px) {
+  .withdrawal-options {
+    flex-direction: column; /* Stack buttons on very small screens */
+    gap: 10px; /* Adjust gap for stacked layout */
+  }
+  .withdrawal-option-btn {
+    width: 100%; /* Make buttons full width when stacked */
+    box-sizing: border-box; /* Ensure padding and border are included in width */
+  }
+
+  /* Optional: Adjust other modal elements for very small screens if needed */
+  .modal-content {
+    margin: 15% auto; /* More top margin on small screens */
+    padding: 20px; /* Slightly less padding */
+  }
+  .modal-content h2 {
+    font-size: 1.6em; /* Adjust title size */
+  }
+   .modal-content h4 {
+    font-size: 1.15em; /* Adjust subtitle size */
+  }
+  .withdrawal-form input[type="text"],
+  .withdrawal-form input[type="number"] {
+    font-size: 0.95em; /* Slightly smaller font in inputs */
+    padding: 10px; /* Adjust padding */
+  }
+  .withdrawal-form button[type="submit"] {
+    font-size: 1em; /* Adjust button font size */
+    padding: 12px 15px; /* Adjust button padding */
+  }
+}
+/* === END ADDED RESPONSIVE STYLES === */

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Withdrawal History - ZYRICO</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d1117;
+      color: #e6edf3;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #58a6ff;
+    }
+
+    .dashboard-container {
+      max-width: 1000px;
+      margin: auto;
+      background-color: #161b22;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,255,0,0.05);
+    }
+
+    .table-responsive-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #30363d;
+    }
+
+    th {
+      background-color: #21262d;
+      color: #58a6ff;
+    }
+
+    tr:hover {
+      background-color: #1f2937;
+    }
+
+    tr.rejected-clickable:hover {
+      cursor: pointer;
+      background-color: #352a2a;
+    }
+
+    .details-cell span {
+      display: block;
+      font-size: 12px;
+      color: #8b949e;
+    }
+
+    .view-history-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #238636;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.2s ease-in-out;
+    }
+
+    .view-history-button:hover {
+      background-color: #2ea043;
+    }
+
+    .status-approved {
+      color: #3fb950;
+      font-weight: bold;
+    }
+
+    .status-pending {
+      color: #f0b400;
+      font-weight: bold;
+    }
+
+    .status-rejected {
+      color: #f85149;
+      font-weight: bold;
+    }
+
+    .status-na {
+      color: #8b949e;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1000; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgba(13, 17, 23, 0.7); /* Darker overlay, matching body bg with alpha */
+      padding-top: 60px; /* Location of the box */
+      backdrop-filter: blur(3px); /* Optional: blur background */
+    }
+
+    .modal-content {
+      background-color: #161b22; /* Matches dashboard container */
+      color: #e6edf3; /* Matches body text */
+      margin: 5% auto;
+      padding: 0; /* Padding will be in header/body */
+      border: 1px solid #30363d; /* Matches table borders */
+      width: 80%;
+      max-width: 500px;
+      border-radius: 8px; /* Matches dashboard container */
+      box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+      animation-name: animatetop;
+      animation-duration: 0.4s;
+      overflow: hidden; /* Ensures border radius is applied to children */
+    }
+
+    @keyframes animatetop {
+      from {top: -300px; opacity: 0}
+      to {top: 0; opacity: 1}
+    }
+
+    .modal-header {
+      padding: 15px 20px;
+      background-color: #21262d; /* Matches table header */
+      color: #58a6ff; /* Matches h1 and table header text */
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .modal-body {
+      padding: 20px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .modal-body p {
+        margin-top: 0;
+    }
+
+    .close-button {
+      color: #8b949e; /* Subtler close button */
+      font-size: 30px;
+      font-weight: bold;
+      transition: color 0.2s ease-in-out;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+      color: #e6edf3; /* Brighter on hover */
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>Withdrawal History</h1>
+
+    <div class="table-responsive-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Method</th>
+            <th>Amount</th>
+            <th>Details</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="withdrawalHistoryBody"></tbody>
+      </table>
+    </div>
+
+    <a href="wallet.html" class="view-history-button">Back to wallet</a>
+  </div>
+
+  <div id="professionalNoticeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Important Notice</h2>
+        <span class="close-button" id="closeModalButton">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p id="modalMessageText">You have exceeded the maximum number of transactions in the last 24 hours. Do not be concerned. You can withdraw normally once the time frame ends.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, query, orderByChild } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9yCEe4a9KC0Ph64gMkrDn_Cfah0TxlMw", // Ensure your actual API key is used here
+      authDomain: "swiftgain.firebaseapp.com",
+      databaseURL: "https://swiftgain-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "swiftgain",
+      storageBucket: "swiftgain.firebasestorage.app",
+      messagingSenderId: "751911092919",
+      appId: "1:751911092919:web:bd0ab90ca8b4432f0d4332"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const database = getDatabase(app);
+
+    const withdrawalHistoryBody = document.getElementById('withdrawalHistoryBody');
+
+    // Modal elements
+    const modal = document.getElementById('professionalNoticeModal');
+    const closeModalButton = document.getElementById('closeModalButton');
+    // const modalMessageTextElement = document.getElementById('modalMessageText'); // If you need to change message dynamically
+
+    // Function to open modal
+    function openModal() {
+      // modalMessageTextElement.textContent = message; // Use this if message changes
+      modal.style.display = "block";
+    }
+
+    // Function to close modal
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    // Event listeners for closing modal
+    closeModalButton.onclick = closeModal;
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
+    // Close with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            closeModal();
+        }
+    });
+
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const userId = user.uid;
+        const withdrawalsQuery = query(ref(database, `withdrawalRequests/${userId}`), orderByChild('requestedAt'));
+
+        onValue(withdrawalsQuery, (snapshot) => {
+          withdrawalHistoryBody.innerHTML = ""; // Clear previous entries
+
+          const withdrawals = [];
+          snapshot.forEach((childSnapshot) => {
+            withdrawals.push({ id: childSnapshot.key, ...childSnapshot.val() });
+          });
+
+          withdrawals.reverse(); // To show newest first
+
+          if (withdrawals.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 5;
+            cell.textContent = "No withdrawal history found.";
+            cell.style.textAlign = "center";
+            cell.style.padding = "20px";
+            cell.style.color = "#adb5bd";
+            row.appendChild(cell);
+            withdrawalHistoryBody.appendChild(row);
+          } else {
+            withdrawals.forEach((withdrawal) => {
+              const row = document.createElement("tr");
+
+              const dateCell = document.createElement("td");
+              dateCell.textContent = new Date(withdrawal.requestedAt || withdrawal.timestamp || Date.now()).toLocaleString();
+              row.appendChild(dateCell);
+
+              const methodCell = document.createElement("td");
+              methodCell.textContent = withdrawal.method || 'N/A';
+              row.appendChild(methodCell);
+
+              let displayAmountINR = 'N/A';
+              const originalNumericAmount = withdrawal.amount ? parseFloat(withdrawal.amount) : null;
+              const finalDisplayCurrencyLabel = 'INR';
+
+              if (originalNumericAmount !== null && !isNaN(originalNumericAmount)) {
+                if (withdrawal.method === 'IMPS/NEFT') {
+                  displayAmountINR = originalNumericAmount.toFixed(2);
+                } else if (withdrawal.method === 'USDT') {
+                  const usdtToInrRate = 93.6;
+                  displayAmountINR = (originalNumericAmount * usdtToInrRate).toFixed(2);
+                } else {
+                  displayAmountINR = originalNumericAmount.toFixed(2);
+                }
+              }
+              const amountCell = document.createElement("td");
+              amountCell.textContent = (displayAmountINR !== 'N/A' && displayAmountINR !== null) ? `${displayAmountINR} ${finalDisplayCurrencyLabel}` : 'N/A';
+              row.appendChild(amountCell);
+
+              const detailsCell = document.createElement("td");
+              detailsCell.classList.add("details-cell");
+
+              if (withdrawal.method === 'USDT') {
+                let displayAddress = 'N/A';
+                if (withdrawal.usdtAddress) {
+                  const addr = withdrawal.usdtAddress;
+                  if (addr.length > 11) {
+                    displayAddress = `${addr.substring(0, 7)}...${addr.substring(addr.length - 4)}`;
+                  } else {
+                    displayAddress = addr;
+                  }
+                }
+                const usdtAddrSpan = document.createElement('span');
+                usdtAddrSpan.textContent = `USDT Address: ${displayAddress}`;
+                detailsCell.appendChild(usdtAddrSpan);
+              } else if (withdrawal.method === 'IMPS/NEFT') {
+                const accNum = withdrawal.accountNumber || 'N/A';
+                const maskedAccountNumber = accNum.length > 4 ? '****' + accNum.substring(accNum.length - 4) : accNum;
+                const ifsc = withdrawal.ifscCode || 'N/A';
+                const name = withdrawal.fullName || 'N/A';
+
+                const acSpan = document.createElement('span');
+                acSpan.textContent = `A/c: ${maskedAccountNumber}`;
+                detailsCell.appendChild(acSpan);
+
+                const ifscSpan = document.createElement('span');
+                ifscSpan.textContent = `IFSC: ${ifsc}`;
+                detailsCell.appendChild(ifscSpan);
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = `Name: ${name}`;
+                detailsCell.appendChild(nameSpan);
+              } else {
+                const naSpan = document.createElement('span');
+                naSpan.textContent = 'N/A';
+                detailsCell.appendChild(naSpan);
+              }
+              row.appendChild(detailsCell);
+
+              const statusCell = document.createElement("td");
+              const statusText = (withdrawal.status || 'N/A').trim(); // Trim status text
+              statusCell.textContent = statusText;
+
+              if (statusText !== 'N/A') {
+                const statusClass = `status-${statusText.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+                statusCell.classList.add(statusClass);
+
+                if (statusText.toLowerCase() === 'rejected') {
+                  row.classList.add('rejected-clickable');
+                  row.addEventListener('click', () => {
+                    // The message is static in the HTML, so just open the modal
+                    openModal();
+                  });
+                }
+              } else {
+                statusCell.classList.add('status-na');
+              }
+              row.appendChild(statusCell);
+
+              withdrawalHistoryBody.appendChild(row);
+            });
+          }
+        }, (error) => {
+          console.error("Error fetching withdrawal history:", error);
+          withdrawalHistoryBody.innerHTML = ""; // Clear previous entries
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.colSpan = 5;
+          cell.textContent = "Error loading withdrawal history. Please try again later.";
+          cell.style.textAlign = "center";
+          cell.style.color = "#f85149"; // Error red
+          cell.style.padding = "20px";
+          cell.style.fontWeight = "500";
+          row.appendChild(cell);
+          withdrawalHistoryBody.appendChild(row);
+        });
+      } else {
+        window.location.href = "index.html"; // Or your login page
+      }
+    });
+  </script>
+</body>
+</html>

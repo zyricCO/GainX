@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM > Access Granted</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Monospace font */
+            line-height: 1.5; /* Slightly tighter line spacing */
+            margin: 0; /* Remove default margin */
+            padding: 20px;
+            padding-bottom: 60px; /* Increased padding at the bottom for both corner elements */
+            background-color: #000; /* Black background */
+            color: #00ff00; /* Neon green text */
+            overflow-y: auto; /* Allow scrolling if content overflows */
+            overflow-x: hidden; /* Hide horizontal scrollbar */
+            position: relative; /* Needed for absolute positioning if not using fixed */
+            font-size: x-small; /* Changed font size to XS (x-small) */
+        }
+
+        /* Removed the body::before scan line effect for a cleaner console look */
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 20px; /* Reduced margin bottom */
+            color: #00ffff; /* Cyan for headings/system messages */
+            text-shadow: 0 0 5px #00ffff; /* Subtle glow */
+            text-align: left; /* Align heading to the left */
+            animation: none; /* Removed flicker animation for a stable header */
+             font-size: 1.2em; /* Adjusted h1 size relative to new body size */
+        }
+
+        .service-item {
+            margin-bottom: 8px; /* Reduced margin bottom */
+            display: flex; /* Use flexbox */
+            justify-content: space-between; /* Space out text and dot */
+            align-items: center;
+            /* Removed background and border for plain console line look */
+            padding: 2px 0; /* Minimal padding */
+        }
+
+        .service-text {
+            flex-grow: 1; /* Allow text to take up available space */
+            position: relative;
+            padding-left: 30px; /* Keep this as it seemed okay for the '>' prompt */
+        }
+
+         .service-text::before {
+             content: "> "; /* The console prompt */
+             position: absolute;
+             left: 0;
+             color: #ffff00; /* Yellow for the prompt */
+         }
+
+
+        .dot {
+            display: inline-block;
+            width: 8px; /* Slightly smaller dot */
+            height: 8px; /* Slightly smaller dot */
+            border-radius: 50%;
+            flex-shrink: 0; /* Prevent dot from shrinking */
+            animation: simple-blink 1s infinite alternate; /* Simple blink animation */
+            box-shadow: 0 0 3px; /* Subtle base glow */
+            margin-left: 8px; /* Space between text and dot */
+        }
+
+        /* Define the simple blink animation */
+        @keyframes simple-blink {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Dot Colors and Status Glow */
+        .red {
+            background-color: #ff0000; /* Red */
+            box-shadow: 0 0 3px #ff0000, 0 0 6px #ff0000;
+        }
+
+        .yellow {
+            background-color: #ffff00; /* Yellow */
+            box-shadow: 0 0 3px #ffff00, 0 0 6px #ffff00;
+        }
+
+        .green {
+            background-color: #00ff00; /* Green */
+            box-shadow: 0 0 3px #00ff00, 0 0 6px #00ff00;
+        }
+
+         .blue {
+            background-color: #0000ff; /* Blue */
+            box-shadow: 0 0 3px #0000ff, 0 0 6px #0000ff;
+        }
+
+
+        /* Style for the redirect notice */
+        .redirect-notice {
+            margin-top: 30px; /* Reduced margin top */
+            font-size: 1em; /* Standard font size relative to body */
+            color: #ffff00; /* Yellow for notice text */
+            font-weight: bold;
+            text-align: left; /* Align notice to the left */
+            text-shadow: 0 0 4px #ffff00; /* Glow on notice */
+            animation: text-blink 0.7s infinite alternate; /* Blinking text */
+            padding-left: 0; /* No prompt here anymore */
+            position: relative;
+            white-space: pre; /* Preserve whitespace and prevent text wrapping during typing */
+            overflow: hidden; /* Hide overflowing text before it's typed */
+        }
+
+         @keyframes text-blink {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* Style for the corner prompt (Bottom Right) */
+        .system-corner-prompt-right {
+            position: fixed; /* Position relative to the viewport */
+            bottom: 10px; /* 10px from the bottom */
+            right: 10px; /* 10px from the right */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1em; /* Match text size relative to body */
+            color: #00ffff; /* Cyan color */
+            text-shadow: 0 0 4px #00ffff; /* Subtle glow */
+            z-index: 100; /* Ensure it's above other content */
+        }
+
+        /* Style for the info display (Bottom Left) */
+        .system-corner-info-left {
+            position: fixed; /* Position relative to the viewport */
+            bottom: 10px; /* 10px from the bottom */
+            left: 10px; /* 10px from the left */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em; /* Slightly smaller text size relative to body */
+            color: #ff0000; /* Changed color to Red */
+            text-shadow: 0 0 3px #ff0000; /* Subtle red glow */
+            z-index: 100; /* Ensure it's above other content */
+            white-space: pre-wrap; /* Allow text wrapping if needed */
+        }
+
+
+        /* Optional: Basic scrollbar styling for Webkit browsers */
+        ::-webkit-scrollbar {
+            width: 6px; /* Slightly thinner scrollbar */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00cc00; /* Slightly darker green */
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #009900; /* Even darker green on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>SYSTEM LOG</h1>
+
+    <div class="service-item">
+        <span class="service-text">Casino Module [STATUS: OFFLINE]</span>
+        <span class="dot red"></span>
+    </div>
+
+    <div class="service-item">
+         <span class="service-text">AI Analyst Engine [STATUS: Dev-Mode]</span>
+        <span class="dot yellow"></span>
+    </div>
+
+    <div class="service-item">
+         <span class="service-text">Trend Analyst Algorithm [STATUS: OFFLINE]</span>
+        <span class="dot red"></span>
+    </div>
+
+     <div class="service-item">
+         <span class="service-text">FFA Account Server [STATUS: Dev-Mode]</span>
+        <span class="dot yellow"></span>
+    </div>
+
+    <div class="service-item">
+         <span class="service-text">SwiftGain [STATUS: Active [Public]]</span>
+        <span class="dot green"></span>
+    </div>
+
+    <div class="service-item">
+         <span class="service-text">VaultXZYC [STATUS: OFFLINE]</span>
+        <span class="dot red"></span>
+    </div>
+
+    <div class="service-item">
+         <span class="service-text">Crypto[ZYC] Snapshot [STATUS: Active [TestData]]</span>
+        <span class="dot blue"></span>
+    </div>
+
+
+    <div id="redirectMessage" class="redirect-notice" style="display: none;">
+        </div>
+
+    <div class="system-corner-prompt-right">SYSTEM ></div>
+
+    <div id="systemInfo" class="system-corner-info-left">
+        </div>
+
+
+    <script>
+        // Wait for the page content to load
+        window.onload = function() {
+            const redirectMessageDiv = document.getElementById('redirectMessage');
+            const systemInfoDiv = document.getElementById('systemInfo'); // Get the new info div
+            const delayBeforeFirstMessage = 2000; // 2 seconds initial wait
+            const delayBetweenMessages = 1000; // 1 second between messages
+            const typingSpeed = 50; // Milliseconds per character for typewriter effect
+
+             // Function to display system info
+            function displaySystemInfo() {
+                console.log("Displaying system info...");
+                const simulatedIp = '192.168.1.101'; // Simulated IP
+                const userAgent = navigator.userAgent;
+
+                // Attempt to extract a more readable browser name (basic example)
+                let browserName = 'Unknown Browser';
+                if (userAgent.includes('Firefox')) {
+                    browserName = 'Firefox';
+                } else if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) {
+                    browserName = 'Chrome';
+                } else if (userAgent.includes('Edg')) {
+                    browserName = 'Edge';
+                } else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) {
+                    browserName = 'Safari';
+                } else if (userAgent.includes('MSIE') || userAgent.includes('Trident')) {
+                     browserName = 'IE';
+                }
+
+                // Format the text, explicitly adding newlines
+                const infoText = `IP: ${simulatedIp}\nBrowser: ${browserName}`;
+
+                systemInfoDiv.innerText = infoText; // Use innerText to preserve line breaks
+                systemInfoDiv.style.display = 'block'; // Make sure it's visible
+            }
+
+
+            // Function to perform the typewriter effect
+            function typeWriter(text, element, callback) {
+                let i = 0;
+                element.innerHTML = ''; // Clear the element before typing
+
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, typingSpeed);
+                    } else {
+                        // Typing is complete
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                }
+                type(); // Start the typing
+            }
+
+
+            // Initial wait before starting the sequence
+            setTimeout(function() {
+                console.log("Starting sequence...");
+
+                // Display system info shortly after the main sequence starts
+                setTimeout(displaySystemInfo, 500); // Display info 0.5 seconds after main sequence starts
+
+                // Show the redirect message area (where log messages will appear)
+                redirectMessageDiv.style.display = 'block';
+
+                // Message 1: Checking Browser
+                redirectMessageDiv.innerHTML = 'Checking Browser <span style="color: #00ffff;">Done</span>';
+
+                // Message 2: Logging EntryData
+                setTimeout(function() {
+                    console.log("Logging entry data...");
+                    redirectMessageDiv.innerHTML = 'Logging EntryData <span style="color: #00ffff;">Done</span>';
+
+                    // Message 3: Showing system status (simulated IP was moved)
+                     setTimeout(function() {
+                         console.log("System status check complete.");
+                         redirectMessageDiv.innerHTML = 'System status check <span style="color: #00ffff;">Complete</span>.';
+
+
+                         // Message 4: Initiating Redirect with Typewriter effect
+                         setTimeout(function() {
+                             console.log("Initiating secure redirect with typewriter effect...");
+                             // MODIFIED: Changed message to reflect new redirection plan
+                             const finalMessage = 'Initiating secure redirect to Terms & Conditions.';
+
+                             // Call the typewriter function for the final message
+                             typeWriter(finalMessage, redirectMessageDiv, function() {
+                                 // This callback runs AFTER the typing is complete
+                                 console.log("Typewriter effect finished. Redirecting to terms.html...");
+                                 // Final step: Redirect
+                                 setTimeout(function() {
+                                      // MODIFIED: Changed redirect URL to terms.html
+                                      window.location.href = 'terms.html';
+                                 }, delayBetweenMessages * 1.5); // Slightly longer delay after typing finishes
+
+                             });
+
+
+                         }, delayBetweenMessages * 1.5); // Delay after Status Check message (slightly longer)
+
+                     }, delayBetweenMessages * 1); // Delay after Logging message
+
+
+                }, delayBetweenMessages * 1); // Delay after Checking Browser message
+
+            }, delayBeforeFirstMessage);
+        };
+    </script>
+
+</body>
+</html>

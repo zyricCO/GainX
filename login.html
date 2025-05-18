@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SWIFTGAIN</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif; /* Professional sans-serif font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a202c; /* Dark background, often seen in trading platforms */
+            color: #e2e8f0; /* Light grey text for readability */
+            text-shadow: none; /* Remove terminal glow */
+            background-image: url('trading-bg.png'); /* Optional: Add a subtle background image */
+            background-size: cover;
+            background-position: center;
+        }
+        .login-container {
+            background-color: rgba(26, 32, 44, 0.9); /* Semi-transparent dark background */
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Professional shadow */
+            text-align: left;
+            border: 1px solid #2d3748; /* Subtle border */
+            backdrop-filter: blur(5px); /* Optional: Blur background behind the container */
+        }
+        h2 {
+            margin-bottom: 30px;
+            color: #4299e1; /* Blue for heading */
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 1.8em;
+            letter-spacing: 1px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0aec0; /* Slightly lighter grey for labels */
+            text-align: left;
+            font-size: 0.9em;
+        }
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #4a5568; /* Darker grey border */
+            background-color: #2d3748; /* Dark input background */
+            color: #e2e8f0; /* Light text in inputs */
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+            text-shadow: none;
+            font-size: 1em;
+        }
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #4299e1; /* Highlight color on focus */
+            box-shadow: 0 0 5px rgba(66, 153, 225, 0.5);
+        }
+        button {
+            background-color: #48bb78; /* Green for primary action */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: 'Open Sans', sans-serif;
+            text-transform: uppercase;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%; /* Make button full width */
+        }
+        button:hover {
+            background-color: #38a169; /* Darker green on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+        .error-message {
+            color: #f56565; /* Red for error messages */
+            margin-top: 15px;
+            font-size: 0.9em;
+            text-shadow: none;
+            text-align: center;
+        }
+        /* Style for the registration closed message */
+        .registration-closed {
+            color: #ecc94d; /* Yellow/amber text */
+            text-shadow: none;
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.9em;
+        }
+         .registration-closed s {
+            text-decoration: line-through;
+            color: #718096; /* Subtle grey for struck text */
+         }
+
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit">Login</button>
+            <p class="error-message" id="errorMessage"></p>
+        </form>
+        <p class="registration-closed"><s>Don't have an account? Sign up</s> Currently We Are Not Accepting New Registrations</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC9yCEe4a9KC0Ph64gMkrDn_Cfah0TxlMw",
+            authDomain: "swiftgain.firebaseapp.com",
+            databaseURL: "https://swiftgain-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "swiftgain",
+            storageBucket: "swiftgain.firebasestorage.app",
+            messagingSenderId: "751911092919",
+            appId: "1:751911092919:web:bd0ab90ca8b4432f0d4332"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const email = loginForm.email.value;
+            const password = loginForm.password.value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    console.log('Logged in:', user);
+                    // >>> CHANGED REDIRECT URL HERE <<<
+                    window.location.href = 'services_listing.html';
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessageText = error.message;
+                    console.error('Login failed:', errorCode, errorMessageText);
+                    errorMessage.textContent = `Error: ${errorMessageText}`; // Display error with "Error:" prefix
+                });
+        });
+    </script>
+</body>
+</html>

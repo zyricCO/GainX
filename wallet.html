@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wallet - SwiftGain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="wallet.css">
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1000; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      font-family: 'Inter', sans-serif;
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto; /* 10% from the top and centered */
+      padding: 25px;
+      border: 1px solid #bbb;
+      width: 85%; /* Could be more or less, depending on screen size */
+      max-width: 550px; /* Maximum width */
+      border-radius: 10px;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .modal-content h2 {
+        margin-top: 0;
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .modal-content h4 {
+        margin-top: 15px;
+        margin-bottom: 10px;
+        color: #555;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+
+    .close-button {
+      color: #aaa;
+      float: right;
+      font-size: 30px;
+      font-weight: bold;
+      line-height: 0.7;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .withdrawal-options {
+      margin-bottom: 25px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .withdrawal-option-btn {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 1em;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .withdrawal-option-btn:hover {
+        background-color: #e0e0e0;
+    }
+
+    .withdrawal-option-btn.active {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+
+    .withdrawal-form label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .withdrawal-form input[type="text"],
+    .withdrawal-form input[type="number"] {
+      width: calc(100% - 22px); /* Account for padding and border */
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 0.95em;
+    }
+     .withdrawal-form input[type="text"]:focus,
+    .withdrawal-form input[type="number"]:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0,123,255,0.25);
+    }
+
+
+    .withdrawal-form button {
+      background-color: #28a745; /* Green */
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 15px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    .withdrawal-form button:hover {
+      background-color: #218838;
+    }
+    .withdrawal-form button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .token-usdt-value {
+      font-size: 0.9em;
+      color: #6c757d; /* A muted grey color */
+      margin-left: 4px; /* Add a small space before it */
+    }
+
+    /* Styles for hamburger menu icons */
+    .slide-out-menu button .menu-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      /* vertical-align: middle; remove if using flexbox */
+    }
+
+    .slide-out-menu button {
+      display: flex; /* Use flexbox for alignment */
+      align-items: center; /* Vertically center items */
+      justify-content: flex-start; /* Align items to the start */
+      /* Adjust padding if necessary, e.g., padding: 10px 15px; */
+    }
+
+
+    @media (max-width: 600px) {
+      .modal-content {
+        margin: 15% auto;
+        width: 90%;
+        padding: 20px;
+      }
+      .withdrawal-options {
+        flex-direction: column;
+      }
+      .withdrawal-option-btn {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+       .withdrawal-option-btn:last-child {
+        margin-bottom: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navbar">
+    <img src="images/logo.png" alt="SWIFTGAIN Logo" id="logo"> <h2>ZYC</h2>
+    <div class="navbar-user-actions">
+      <span id="userEmailWallet">User</span>
+      <div class="hamburger-menu" id="hamburgerIconWallet">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <div class="slide-out-menu" id="slideOutMenuWallet">
+      <button onclick="window.location.href='dashboard.html'">
+        <img src="images/icon-dash.png" alt="Dashboard" class="menu-icon"> Dashboard
+      </button>
+      <button onclick="window.location.href='main-deposit.html'">
+        <img src="images/icon-depo.png" alt="Deposit" class="menu-icon"> Deposit Funds
+      </button>
+      <button class="logout-button" onclick="window.location.href='index.html'">
+        <img src="images/icon-logout.png" alt="Logout" class="menu-icon"> Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="wallet-container">
+    <h1>My Wallet</h1>
+
+    <div class="data-section balance-overview">
+      <h3>Balance Overview</h3>
+      <p class="data-item"><strong>Total Portfolio Value:</strong> <img src="images/usdt-logo.png" alt="USDT" class="currency-icon"><span id="totalValueUsd">Loading...</span> USDT</p>
+      <p class="data-item"><strong>ZSG Token Balance:</strong> <img src="images/logo-zsg.png" alt="ZSG" class="currency-icon"><span id="zsgBalance">Loading...</span> ZSG <span id="zsgBalanceUsdt" class="token-usdt-value">(Loading...)</span></p>
+      <p class="data-item"><strong>USDT Balance:</strong> <img src="images/usdt-logo.png" alt="USDT" class="currency-icon"><span id="usdtBalance">Loading...</span> USDT</p>
+      <p class="data-item">
+        <strong>Withdrawal Balance:</strong>
+        <img src="images/usdt-logo.png" alt="USDT" class="currency-icon"><span id="withdrawalAvailableWallet">Loading...</span> USDT
+        <span id="withdrawalAvailableWalletInr">Loading...</span> INR
+      </p>
+    </div>
+
+    <div class="button-container">
+      <button class="deposit-button" onclick="window.location.href='main-deposit.html'">Deposit USDT</button>
+      <button id="openWithdrawModalButton">Withdraw Funds</button>
+      <a href="withdrawal-history.html" class="dashboard-link">Withdrawal History</a>
+      <a href="dashboard.html" class="dashboard-link">Back to Dashboard</a>
+    </div>
+
+    </div>
+
+  <div id="withdrawalModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="closeWithdrawModalBtn">&times;</span>
+      <h2>Withdraw Funds</h2>
+      <div class="withdrawal-options">
+        <button id="selectImpsNeftBtn" class="withdrawal-option-btn active">IMPS/NEFT</button>
+        <button id="selectUsdtTrc20Btn" class="withdrawal-option-btn">USDT-TRC20</button>
+      </div>
+
+      <div id="impsNeftForm" class="withdrawal-form">
+        <h4>IMPS/NEFT Details</h4>
+        <label for="withdrawalFullName">Full Name:</label>
+        <input type="text" id="withdrawalFullName" name="withdrawalFullName" required>
+
+        <label for="withdrawalIfscCode">IFSC Code:</label>
+        <input type="text" id="withdrawalIfscCode" name="withdrawalIfscCode" required>
+
+        <label for="withdrawalAccountNumber">Account Number:</label>
+        <input type="text" id="withdrawalAccountNumber" name="withdrawalAccountNumber" required>
+
+        <label for="withdrawalImpsAmount">Amount (INR):</label>
+        <input type="number" id="withdrawalImpsAmount" name="withdrawalImpsAmount" placeholder="e.g., 5000" required>
+        <button id="submitImpsWithdrawalBtn">Submit IMPS/NEFT Withdrawal</button>
+      </div>
+
+      <div id="usdtTrc20Form" class="withdrawal-form" style="display: none;">
+        <h4>USDT-TRC20 Details</h4>
+         <label for="withdrawalUsdtAmount">Amount (USDT):</label>
+        <input type="number" id="withdrawalUsdtAmount" name="withdrawalUsdtAmount" placeholder="e.g., 100" required>
+
+        <label for="withdrawalUsdtAddress">USDT Wallet Address (TRC20):</label>
+        <input type="text" id="withdrawalUsdtAddress" name="withdrawalUsdtAddress" placeholder="Starts with T..." required>
+        <button id="submitUsdtWithdrawalBtn">Submit USDT Withdrawal</button>
+      </div>
+    </div>
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, query, orderByChild, serverTimestamp, push, set, get, update } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9yCEe4a9KC0Ph64gMkrDn_Cfah0TxlMw", // Replace with your actual API key
+      authDomain: "swiftgain.firebaseapp.com",
+      databaseURL: "https://swiftgain-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "swiftgain",
+      storageBucket: "swiftgain.firebasestorage.app",
+      messagingSenderId: "751911092919",
+      appId: "1:751911092919:web:bd0ab90ca8b4432f0d4332"
+    };
+
+    let app;
+    let auth;
+    let database;
+    let currentUserId = null;
+    let currentZSGValue = 2.98; // Default, will try to fetch
+    let INR_CONVERSION_RATE = 93.6; // USDT to INR conversion rate - Default, will be updated from Firebase
+
+    try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        database = getDatabase(app);
+        console.log("Firebase initialized successfully for Wallet page.");
+
+        const inrRateRef = ref(database, 'globals/conversionRates/USDT_INR');
+        onValue(inrRateRef, (snapshot) => {
+            const newRate = snapshot.val();
+            if (snapshot.exists() && typeof newRate === 'number' && newRate > 0) {
+                if (INR_CONVERSION_RATE !== newRate) {
+                    INR_CONVERSION_RATE = newRate;
+                    console.log("INR_CONVERSION_RATE updated from Firebase to:", INR_CONVERSION_RATE);
+                    if (currentUserId) {
+                        updateWalletData(currentUserId);
+                    }
+                }
+            } else {
+                console.warn(`Using current/default INR_CONVERSION_RATE (${INR_CONVERSION_RATE}). Firebase value at 'globals/conversionRates/USDT_INR' not found, invalid, or not a positive number.`);
+            }
+        }, (error) => {
+            console.error("Error fetching INR_CONVERSION_RATE from Firebase. Using current/default rate. Error:", error);
+        });
+
+    } catch (error) {
+        console.error("Firebase initialization error on Wallet page:", error);
+        document.body.innerHTML = '<div style="text-align: center; padding: 50px; font-family: Inter, sans-serif;"><h1>Service Connection Error</h1><p>Could not connect to the required services. Please try again later.</p></div>';
+    }
+
+    const hamburgerIcon = document.getElementById('hamburgerIconWallet');
+    const slideOutMenu = document.getElementById('slideOutMenuWallet');
+
+    if (hamburgerIcon && slideOutMenu) {
+        hamburgerIcon.addEventListener('click', (event) => {
+          slideOutMenu.classList.toggle('show');
+          event.stopPropagation();
+        });
+        document.addEventListener('click', (event) => {
+          if (slideOutMenu.classList.contains('show') && !hamburgerIcon.contains(event.target) && !slideOutMenu.contains(event.target)) {
+            slideOutMenu.classList.remove('show');
+          }
+        });
+    }
+
+    // formatDate function removed as it's no longer used
+
+    function updateWalletData(userId) {
+      const zsgValueRef = ref(database, 'tokenInfo/currentValue');
+      onValue(zsgValueRef, (snapshot) => {
+          if (snapshot.exists() && typeof snapshot.val() === 'number' && snapshot.val() > 0) {
+              currentZSGValue = snapshot.val();
+          } else if (snapshot.exists() && snapshot.val() <= 0) {
+              console.warn("Fetched ZSG value is zero or negative, using default.");
+          } else {
+            console.warn("ZSG value not found in Firebase, using default:", currentZSGValue);
+          }
+
+          const userRef = ref(database, `users/${userId}`);
+          onValue(userRef, (userDataSnapshot) => {
+            const zsgBalanceSpan = document.getElementById('zsgBalance');
+            const zsgBalanceUsdtSpan = document.getElementById('zsgBalanceUsdt');
+            const usdtBalanceSpan = document.getElementById('usdtBalance');
+            const totalValueUsdSpan = document.getElementById('totalValueUsd');
+            const withdrawalAvailableWalletSpan = document.getElementById('withdrawalAvailableWallet');
+            const withdrawalAvailableWalletInrSpan = document.getElementById('withdrawalAvailableWalletInr');
+
+            if (userDataSnapshot.exists()) {
+              const userData = userDataSnapshot.val();
+              const totalInvestment = parseFloat(userData.totalInvestment) || 0;
+              const withdrawalAvailable = parseFloat(userData.withdrawalAvailable) || 0;
+              const usdtBalance = parseFloat(userData.usdtBalance) || 0;
+
+              const portfolioValue = usdtBalance + totalInvestment;
+
+              const zsgAmountText = (currentZSGValue > 0 ? (totalInvestment / currentZSGValue).toFixed(4) : 'N/A (Price Error)');
+              const zsgUsdtValueText = (currentZSGValue > 0 && totalInvestment >= 0 ? `(${totalInvestment.toFixed(2)} USDT)` : '');
+
+
+              if (totalValueUsdSpan) totalValueUsdSpan.textContent = portfolioValue.toFixed(2);
+              if (zsgBalanceSpan) {
+                zsgBalanceSpan.textContent = zsgAmountText;
+              }
+              if (zsgBalanceUsdtSpan) {
+                zsgBalanceUsdtSpan.textContent = zsgUsdtValueText;
+              }
+              if (usdtBalanceSpan) usdtBalanceSpan.textContent = usdtBalance.toFixed(2);
+              if (withdrawalAvailableWalletSpan) withdrawalAvailableWalletSpan.textContent = withdrawalAvailable.toFixed(2);
+              if (withdrawalAvailableWalletInrSpan) {
+                withdrawalAvailableWalletInrSpan.textContent = (withdrawalAvailable * INR_CONVERSION_RATE).toFixed(2);
+              }
+
+            } else {
+              console.log("No user data available for wallet:", userId);
+              if (totalValueUsdSpan) totalValueUsdSpan.textContent = 'N/A';
+              if (zsgBalanceSpan) zsgBalanceSpan.textContent = 'N/A';
+              if (zsgBalanceUsdtSpan) zsgBalanceUsdtSpan.textContent = '';
+              if (usdtBalanceSpan) usdtBalanceSpan.textContent = 'N/A';
+              if (withdrawalAvailableWalletSpan) withdrawalAvailableWalletSpan.textContent = '0.00';
+              if (withdrawalAvailableWalletInrSpan) withdrawalAvailableWalletInrSpan.textContent = '0.00';
+            }
+          }, (error) => {
+            console.error("Error fetching user wallet data:", error);
+             const setTextOnError = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+             setTextOnError('totalValueUsd', 'Error');
+             setTextOnError('zsgBalance', 'Error');
+             if (document.getElementById('zsgBalanceUsdt')) document.getElementById('zsgBalanceUsdt').textContent = '';
+             setTextOnError('usdtBalance', 'Error');
+             setTextOnError('withdrawalAvailableWallet', 'Error');
+             setTextOnError('withdrawalAvailableWalletInr', 'Error');
+          });
+      }, (error) => {
+          console.warn("Could not fetch current ZSG value, using default. Error:", error);
+          const userRef = ref(database, `users/${userId}`);
+          onValue(userRef, (userDataSnapshot) => {
+            const zsgBalanceSpan = document.getElementById('zsgBalance');
+            const zsgBalanceUsdtSpan = document.getElementById('zsgBalanceUsdt');
+            const usdtBalanceSpan = document.getElementById('usdtBalance');
+            const totalValueUsdSpan = document.getElementById('totalValueUsd');
+            const withdrawalAvailableWalletSpan = document.getElementById('withdrawalAvailableWallet');
+            const withdrawalAvailableWalletInrSpan = document.getElementById('withdrawalAvailableWalletInr');
+
+            if (userDataSnapshot.exists()) {
+              const userData = userDataSnapshot.val();
+              const totalInvestment = parseFloat(userData.totalInvestment) || 0;
+              const withdrawalAvailable = parseFloat(userData.withdrawalAvailable) || 0;
+              const usdtBalance = parseFloat(userData.usdtBalance) || 0;
+
+              const portfolioValue = usdtBalance + totalInvestment;
+
+              const zsgAmountText = (currentZSGValue > 0 ? (totalInvestment / currentZSGValue).toFixed(4) : 'N/A (Price Error)');
+              const zsgUsdtValueText = (currentZSGValue > 0 && totalInvestment >= 0 ? `(${totalInvestment.toFixed(2)} USDT)` : '');
+
+
+              if (totalValueUsdSpan) totalValueUsdSpan.textContent = portfolioValue.toFixed(2);
+              if (zsgBalanceSpan) zsgBalanceSpan.textContent = zsgAmountText;
+              if (zsgBalanceUsdtSpan) zsgBalanceUsdtSpan.textContent = zsgUsdtValueText;
+              if (usdtBalanceSpan) usdtBalanceSpan.textContent = usdtBalance.toFixed(2);
+              if (withdrawalAvailableWalletSpan) withdrawalAvailableWalletSpan.textContent = withdrawalAvailable.toFixed(2);
+              if (withdrawalAvailableWalletInrSpan) {
+                withdrawalAvailableWalletInrSpan.textContent = (withdrawalAvailable * INR_CONVERSION_RATE).toFixed(2);
+              }
+            } else {
+                if (totalValueUsdSpan) totalValueUsdSpan.textContent = 'N/A';
+                if (zsgBalanceSpan) zsgBalanceSpan.textContent = 'N/A';
+                if (zsgBalanceUsdtSpan) zsgBalanceUsdtSpan.textContent = '';
+                if (usdtBalanceSpan) usdtBalanceSpan.textContent = 'N/A';
+                if (withdrawalAvailableWalletSpan) withdrawalAvailableWalletSpan.textContent = '0.00';
+                if (withdrawalAvailableWalletInrSpan) withdrawalAvailableWalletInrSpan.textContent = '0.00';
+            }
+          }, (errorUser) => {
+            console.error("Error fetching user wallet data (after ZSG value error):", errorUser);
+             const setTextOnError = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+             setTextOnError('totalValueUsd', 'Error');
+             setTextOnError('zsgBalance', 'Error');
+             if (document.getElementById('zsgBalanceUsdt')) document.getElementById('zsgBalanceUsdt').textContent = '';
+             setTextOnError('usdtBalance', 'Error');
+             setTextOnError('withdrawalAvailableWallet', 'Error');
+             setTextOnError('withdrawalAvailableWalletInr', 'Error');
+          });
+      });
+    }
+
+    // fetchTransactionHistory function removed
+
+    if (auth && database) {
+        onAuthStateChanged(auth, (user) => {
+          const userEmailSpan = document.getElementById("userEmailWallet");
+          if (user) {
+            currentUserId = user.uid;
+            if (userEmailSpan) {
+                userEmailSpan.textContent = user.email || 'User';
+            }
+            updateWalletData(currentUserId);
+            // Call to fetchTransactionHistory removed
+          } else {
+            currentUserId = null;
+            console.log("User is not authenticated. Redirecting to login.");
+            if (userEmailSpan) {
+                userEmailSpan.textContent = 'User';
+            }
+            const setTextToDefault = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+            setTextToDefault('totalValueUsd', 'N/A');
+            setTextToDefault('zsgBalance', 'N/A');
+            const zsgBalanceUsdtSpan = document.getElementById('zsgBalanceUsdt');
+            if (zsgBalanceUsdtSpan) zsgBalanceUsdtSpan.textContent = '';
+            setTextToDefault('usdtBalance', 'N/A');
+            setTextToDefault('withdrawalAvailableWallet', '0.00');
+            setTextToDefault('withdrawalAvailableWalletInr', '0.00');
+            // Logic for clearing transaction history table removed
+          }
+        });
+    } else {
+        console.error("Firebase auth or database is not available. Wallet functionality will be limited.");
+        const walletContainer = document.querySelector('.wallet-container');
+        if (walletContainer) {
+            walletContainer.innerHTML = '<p style="color: red; text-align: center;">Critical error: Could not initialize services. Wallet is unavailable.</p>';
+        }
+    }
+
+    // Modal Getters
+    const withdrawalModal = document.getElementById('withdrawalModal');
+    const openWithdrawModalButton = document.getElementById('openWithdrawModalButton');
+    const closeWithdrawModalBtn = document.getElementById('closeWithdrawModalBtn');
+
+    // Form Getters
+    const impsNeftForm = document.getElementById('impsNeftForm');
+    const usdtTrc20Form = document.getElementById('usdtTrc20Form');
+    const selectImpsNeftBtn = document.getElementById('selectImpsNeftBtn');
+    const selectUsdtTrc20Btn = document.getElementById('selectUsdtTrc20Btn');
+
+    // Input Getters for IMPS/NEFT
+    const withdrawalFullNameInput = document.getElementById('withdrawalFullName');
+    const withdrawalIfscCodeInput = document.getElementById('withdrawalIfscCode');
+    const withdrawalAccountNumberInput = document.getElementById('withdrawalAccountNumber');
+    const withdrawalImpsAmountInput = document.getElementById('withdrawalImpsAmount');
+    const submitImpsWithdrawalBtn = document.getElementById('submitImpsWithdrawalBtn');
+
+    // Input Getters for USDT/TRC20
+    const withdrawalUsdtAmountInput = document.getElementById('withdrawalUsdtAmount');
+    const withdrawalUsdtAddressInput = document.getElementById('withdrawalUsdtAddress');
+    const submitUsdtWithdrawalBtn = document.getElementById('submitUsdtWithdrawalBtn');
+
+
+    // Modal Logic
+    if (openWithdrawModalButton) {
+        openWithdrawModalButton.onclick = function() {
+            if (!currentUserId) {
+                alert("Please log in to withdraw funds.");
+                return;
+            }
+            withdrawalModal.style.display = "block";
+            impsNeftForm.style.display = "block";
+            usdtTrc20Form.style.display = "none";
+            selectImpsNeftBtn.classList.add('active');
+            selectUsdtTrc20Btn.classList.remove('active');
+            withdrawalImpsAmountInput.value = '';
+            withdrawalUsdtAmountInput.value = '';
+            withdrawalUsdtAddressInput.value = '';
+
+            const userBankDetailsRef = ref(database, `users/${currentUserId}/bankDetails`);
+            get(userBankDetailsRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const bankDetails = snapshot.val();
+                    if(withdrawalFullNameInput) withdrawalFullNameInput.value = bankDetails.fullName || '';
+                    if(withdrawalIfscCodeInput) withdrawalIfscCodeInput.value = bankDetails.ifscCode || '';
+                    if(withdrawalAccountNumberInput) withdrawalAccountNumberInput.value = bankDetails.accountNumber || '';
+                }
+            }).catch(error => console.error("Error fetching bank details:", error));
+        }
+    }
+
+    if (closeWithdrawModalBtn) {
+        closeWithdrawModalBtn.onclick = function() {
+            withdrawalModal.style.display = "none";
+        }
+    }
+
+    window.onclick = function(event) {
+        if (event.target == withdrawalModal) {
+            withdrawalModal.style.display = "none";
+        }
+    }
+
+    // Withdrawal option toggle
+    if (selectImpsNeftBtn && selectUsdtTrc20Btn) {
+        selectImpsNeftBtn.onclick = function() {
+            impsNeftForm.style.display = "block";
+            usdtTrc20Form.style.display = "none";
+            selectImpsNeftBtn.classList.add('active');
+            selectUsdtTrc20Btn.classList.remove('active');
+        }
+        selectUsdtTrc20Btn.onclick = function() {
+            impsNeftForm.style.display = "none";
+            usdtTrc20Form.style.display = "block";
+            selectUsdtTrc20Btn.classList.add('active');
+            selectImpsNeftBtn.classList.remove('active');
+        }
+    }
+
+
+    async function handleWithdrawal(amount, method, details) {
+        if (!currentUserId) {
+            alert("User not authenticated. Cannot process withdrawal.");
+            return;
+        }
+        if (amount <= 0) {
+            alert("Withdrawal amount must be positive.");
+            return;
+        }
+
+        const submitButton = method === 'IMPS/NEFT' ? submitImpsWithdrawalBtn : submitUsdtWithdrawalBtn;
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processing...';
+
+        try {
+            const userRef = ref(database, `users/${currentUserId}`);
+            const userSnapshot = await get(userRef);
+
+            if (!userSnapshot.exists()) {
+                throw new Error("User data not found.");
+            }
+            const userData = userSnapshot.val();
+            let withdrawalAvailableUsdt = parseFloat(userData.withdrawalAvailable) || 0;
+            let usdtEquivalentDeducted;
+
+            if (method === 'IMPS/NEFT') {
+                const amountInr = parseFloat(amount);
+                if (isNaN(amountInr) || amountInr <=0) {
+                    alert("Invalid INR amount.");
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit IMPS/NEFT Withdrawal';
+                    return;
+                }
+                usdtEquivalentDeducted = amountInr / INR_CONVERSION_RATE;
+                if (usdtEquivalentDeducted > withdrawalAvailableUsdt) {
+                    alert(`Insufficient withdrawal balance. You need ${usdtEquivalentDeducted.toFixed(2)} USDT equivalent for this INR withdrawal (Rate: 1 USDT = ${INR_CONVERSION_RATE} INR).`);
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit IMPS/NEFT Withdrawal';
+                    return;
+                }
+                const currentBankDetails = {
+                    fullName: details.fullName,
+                    ifscCode: details.ifscCode,
+                    accountNumber: details.accountNumber
+                };
+                if (!userData.bankDetails ||
+                    userData.bankDetails.fullName !== currentBankDetails.fullName ||
+                    userData.bankDetails.ifscCode !== currentBankDetails.ifscCode ||
+                    userData.bankDetails.accountNumber !== currentBankDetails.accountNumber) {
+                    await update(ref(database, `users/${currentUserId}/bankDetails`), currentBankDetails);
+                }
+            } else if (method === 'USDT') {
+                usdtEquivalentDeducted = parseFloat(amount);
+                 if (isNaN(usdtEquivalentDeducted) || usdtEquivalentDeducted <=0) {
+                    alert("Invalid USDT amount.");
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit USDT Withdrawal';
+                    return;
+                }
+                if (usdtEquivalentDeducted > withdrawalAvailableUsdt) {
+                    alert("Insufficient USDT withdrawal balance.");
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit USDT Withdrawal';
+                    return;
+                }
+            } else {
+                throw new Error("Invalid withdrawal method.");
+            }
+
+            const newCombinedBalance = withdrawalAvailableUsdt - usdtEquivalentDeducted;
+            const withdrawalRequestRef = push(ref(database, `withdrawalRequests/${currentUserId}`));
+            const withdrawalData = {
+                userId: currentUserId,
+                amount: parseFloat(amount),
+                currency: method === 'IMPS/NEFT' ? 'INR' : 'USDT',
+                usdtEquivalentDeducted: parseFloat(usdtEquivalentDeducted.toFixed(2)),
+                method: method,
+                status: 'Pending',
+                requestedAt: serverTimestamp(),
+                conversionRateSnapshot: method === 'IMPS/NEFT' ? INR_CONVERSION_RATE : null,
+                ...(method === 'IMPS/NEFT' && {
+                    fullName: details.fullName,
+                    ifscCode: details.ifscCode,
+                    accountNumber: details.accountNumber
+                }),
+                ...(method === 'USDT' && {
+                    usdtAddress: details.usdtAddress
+                })
+            };
+            await set(withdrawalRequestRef, withdrawalData);
+
+            await update(userRef, {
+                withdrawalAvailable: parseFloat(newCombinedBalance.toFixed(2)),
+                usdtBalance: parseFloat(newCombinedBalance.toFixed(2))
+            });
+
+            alert(`Withdrawal request for ${amount} ${withdrawalData.currency} submitted successfully!`);
+            withdrawalModal.style.display = "none";
+            // Call to fetchTransactionHistory removed
+            updateWalletData(currentUserId);
+
+        } catch (error) {
+            console.error("Withdrawal error:", error);
+            alert("Withdrawal failed: " + error.message);
+        } finally {
+            submitButton.disabled = false;
+            if (method === 'IMPS/NEFT') {
+                submitButton.textContent = 'Submit IMPS/NEFT Withdrawal';
+            } else {
+                submitButton.textContent = 'Submit USDT Withdrawal';
+            }
+        }
+    }
+
+
+    if (submitImpsWithdrawalBtn) {
+        submitImpsWithdrawalBtn.onclick = function() {
+            const fullName = withdrawalFullNameInput.value.trim();
+            const ifscCode = withdrawalIfscCodeInput.value.trim().toUpperCase();
+            const accountNumber = withdrawalAccountNumberInput.value.trim();
+            const amountInr = withdrawalImpsAmountInput.value;
+
+            if (!fullName || !ifscCode || !accountNumber || !amountInr) {
+                alert("Please fill in all IMPS/NEFT fields.");
+                return;
+            }
+            if (parseFloat(amountInr) <= 0) {
+                alert("INR Amount must be greater than zero.");
+                return;
+            }
+            if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
+                alert("Invalid IFSC code format. It should be like SBIN0001234.");
+                return;
+            }
+            if (!/^\d{9,18}$/.test(accountNumber)) {
+                alert("Invalid account number. It should be 9-18 digits long.");
+                return;
+            }
+
+            handleWithdrawal(amountInr, 'IMPS/NEFT', { fullName, ifscCode, accountNumber });
+        };
+    }
+
+    if (submitUsdtWithdrawalBtn) {
+        submitUsdtWithdrawalBtn.onclick = function() {
+            const amountUsdt = withdrawalUsdtAmountInput.value;
+            const usdtAddress = withdrawalUsdtAddressInput.value.trim();
+
+            if (!amountUsdt || !usdtAddress) {
+                alert("Please fill in all USDT-TRC20 fields.");
+                return;
+            }
+            if (parseFloat(amountUsdt) <= 0) {
+                alert("USDT Amount must be greater than zero.");
+                return;
+            }
+            if (!/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(usdtAddress)) {
+                alert("Invalid USDT TRC20 address format. It should start with 'T' and be 34 characters long.");
+                return;
+            }
+            handleWithdrawal(amountUsdt, 'USDT', { usdtAddress });
+        };
+    }
+
+  </script>
+
+  <footer style="background-color:#0c1f3f; color:#f0f0f0; padding:40px 20px; font-family:sans-serif; font-size:14px;">
+    <div style="max-width:1200px; margin:auto;">
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between;">
+        <div style="flex:1 1 300px; margin-bottom:20px;">
+          <h3 style="color:#fff;">GainX by ZYRICCO</h3>
+          <p>Empowering your financial future with AI-driven investment solutions. Trade smart. Grow consistently.</p>
+          <p style="margin-top:10px;">Licensed by:</p>
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li>• FCA UK Reg No: 783192</li>
+            <li>• FINRA Member ID: ZX19288</li>
+            <li>• CySEC License No: 431/22</li>
+            <li>• BVI FSC Company ID: 2028982</li>
+          </ul>
+        </div>
+        <div style="flex:1 1 200px; margin-bottom:20px;">
+          <h4 style="color:#fff;">Legal & Support</h4>
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li><a href="legal.html" style="color:#ccc; text-decoration:none;">Terms & Conditions</a></li>
+            <li><a href="legal.html" style="color:#ccc; text-decoration:none;">Privacy Policy</a></li>
+            <li><a href="legal.html" style="color:#ccc; text-decoration:none;">AML & Compliance</a></li>
+            <li><a href="mailto:support@gainx.ai" style="color:#ccc; text-decoration:none;">support@gainx.ai</a></li>
+            <li><a href="mailto:press@zyricco.com" style="color:#ccc; text-decoration:none;">press@zyricco.com</a></li>
+          </ul>
+        </div>
+        <div style="flex:1 1 200px; margin-bottom:20px;">
+          <h4 style="color:#fff;">Head Office</h4>
+          <p>ZYRICCO Finance Ltd.</p>
+          <p>85 Bishopsgate, London EC2N 4AJ</p>
+          <p>Company Reg: #ZE-5082291</p>
+          <p>Regulated Markets Division, EU Zone</p>
+        </div>
+      </div>
+
+      <hr style="border:0; border-top:1px solid #444; margin:30px 0;" />
+
+      <div style="text-align:center; color:#aaa;">
+        <p>GainX is a product of ZYRICCO Financial Services. All rights reserved © 2016–2025</p>
+        <p>Investing involves risk. Please review our policies before engaging in any transactions.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

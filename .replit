@@ -1,0 +1,22 @@
+entrypoint="index.html"
+hidden=[".config"]
+modules = ["web:v2-20230623-0b7a606"]
+
+[nix]
+channel = "stable-23_11"
+
+[deployment]
+publicDir = "/"
+deploymentTarget = "static"
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 42207720
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python telegram_bot.py"

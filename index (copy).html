@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWIFTGAIN - 12% Daily Profit with AI Forex Trading</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px; /* Increased padding */
+            background-color: #f0f0f0;
+        }
+        .top-bar a button {
+            padding: 10px 20px; /* Increased button padding */
+            background-color: #007bff; /* Updated button color */
+            color: white;
+            border: none;
+            border-radius: 6px; /* Slightly more rounded corners */
+            font-weight: bold;
+            font-size: 16px; /* Increased font size */
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth hover transition */
+        }
+        .top-bar a button:hover {
+            background-color: #0056b3;
+        }
+        header {
+            text-align: center;
+            padding: 40px 20px; /* Increased padding */
+            background-color: #e9ecef; /* Light background for header */
+        }
+        header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em; /* Increased font size */
+        }
+        header p {
+            color: #6c757d;
+            font-size: 1.1em;
+        }
+        #about {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        #about h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        #about p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        #plans {
+            padding: 40px 20px;
+            background-color: #f8f9fa; /* Light background for plans */
+        }
+        #plans h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2em;
+        }
+        .plan {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .plan h3 {
+            color: #007bff;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+        .plan p {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .plan-button {
+            padding: 10px 20px;
+            background-color: #28a745; /* Green button for plans */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .plan-button:hover {
+            background-color: #1e7e34;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #343a40; /* Dark background for footer */
+            color: white;
+            font-size: 0.9em;
+        }
+        #greeting {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            color: #28a745; /* Green color for greeting */
+        }
+    </style>
+</head>
+<body>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyC9yCEe4a9KC0Ph64gMkrDn_Cfah0TxlMw",
+        authDomain: "swiftgain.firebaseapp.com",
+        projectId: "swiftgain",
+        storageBucket: "swiftgain.firebasestorage.app",
+        messagingSenderId: "751911092919",
+        appId: "1:751911092919:web:bd0ab90ca8b4432f0d4332"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth();
+
+      // Firebase Authentication state listener
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in, show greeting and hide login button
+          document.getElementById('loginBtn').style.display = 'none';
+          document.getElementById('greeting').textContent = `Hello, ${user.email}`;
+        } else {
+          // No user is signed in, show login button
+          document.getElementById('loginBtn').style.display = 'block';
+          document.getElementById('greeting').textContent = 'Please log in';
+        }
+      });
+    </script>
+
+    <div class="top-bar">
+        <a href="login.html"><button id="loginBtn">Login</button></a>
+    </div>
+
+    <header>
+        <h1>SWIFTGAIN</h1>
+        <p>Your daily 12% profit with AI-driven Forex trading.</p>
+    </header>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>SWIFTGAIN uses advanced AI algorithms to ensure you earn 12% profit daily. Join us today!</p>
+    </section>
+
+    <section id="plans">
+        <h2>Subscription Plans</h2>
+        <div class="plan">
+            <h3>Basic Plan</h3>
+            <p>Daily Profit: 12% | Monthly Fee: $100</p>
+            <button class="plan-button" data-plan="Basic Plan">Select Plan</button>
+        </div>
+        <div class="plan">
+            <h3>Advanced Plan</h3>
+            <p>Daily Profit: 12% | Monthly Fee: $200</p>
+            <button class="plan-button" data-plan="Advanced Plan">Select Plan</button>
+        </div>
+        <div class="plan">
+            <h3>Premium Plan</h3>
+            <p>Daily Profit: 12% | Monthly Fee: $300</p>
+            <button class="plan-button" data-plan="Premium Plan">Select Plan</button>
+        </div>
+        <div class="plan">
+            <h3>Elite Plan</h3>
+            <p>Daily Profit: 12% | Monthly Fee: $400</p>
+            <button class="plan-button" data-plan="Elite Plan">Select Plan</button>
+        </div>
+        <div class="plan">
+            <h3>Ultimate Plan</h3>
+            <p>Daily Profit: 12% | Monthly Fee: $500</p>
+            <button class="plan-button" data-plan="Ultimate Plan">Select Plan</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>Address: 1234 Forex Street, London, UK</p>
+    </footer>
+
+    <div id="greeting">Please log in</div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - SwiftGain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    /* Basic styling for new elements - ideally, move to dashboard.css */
+    .deposit-address-container {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    .deposit-address-container input[readonly] {
+      flex-grow: 1;
+      margin-right: 10px;
+      /* Kept f0f0f0 from original, but dashboard.css might override for dark theme modals */
+      /* background-color: #f0f0f0; */
+    }
+    .qr-code-container {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .qr-code-container img {
+      border: 1px solid #ccc;
+    }
+    .deposit-instructions {
+      margin-bottom: 15px;
+      font-size: 0.9em;
+      line-height: 1.4;
+    }
+    .deposit-instructions .caution-text-container {
+        display: flex;
+        align-items: center;
+        color: #856404;
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-top: 5px;
+    }
+    .deposit-instructions .caution-text-container svg {
+        margin-right: 8px;
+        min-width: 16px;
+    }
+
+    /* Styles for main page button container - these are fine here or can be moved to dashboard.css */
+    .button-container button, .button-container .view-history-button {
+        margin-right: 10px;
+        padding: 10px 15px;
+        text-decoration: none;
+        color: white;
+        background-color: #5cb85c; /* This green is different from dashboard.css buttons */
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        display: inline-block;
+    }
+    .button-container button:hover, .button-container .view-history-button:hover {
+        background-color: #4cae4c;
+    }
+    .button-container button:last-child, .button-container .view-history-button:last-of-type {
+        margin-right: 0;
+    }
+    /* END of main page button container styles */
+
+
+    /* Styles for payment status spinner - these are fine here or can be moved to dashboard.css */
+    .payment-status-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .spinner-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 30px;
+      margin-bottom: 10px;
+    }
+    .spinner-dots div {
+      width: 10px;
+      height: 10px;
+      background-color: #4CAF50; /* Consider using a CSS variable for theme color */
+      border-radius: 100%;
+      display: inline-block;
+      animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      margin: 0 3px;
+    }
+    .spinner-dots .bounce1 {
+      animation-delay: -0.32s;
+    }
+    .spinner-dots .bounce2 {
+      animation-delay: -0.16s;
+    }
+    @keyframes sk-bouncedelay {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1.0); }
+    }
+    .payment-status-container p {
+        font-size: 0.95em;
+        color: #333; /* This color is for light backgrounds, will be hard to see in dark modal */
+    }
+    /* END of payment status spinner styles */
+
+    /* Styles for Withdrawal Modal Fields - these are fine or can be moved to dashboard.css */
+    .withdrawal-form label { /* These are general, dashboard.css has more specific ones for dark theme */
+      /* display: block; */
+      /* margin-top: 10px; */
+      /* margin-bottom: 3px; */
+      /* font-weight: 600; */
+    }
+    .withdrawal-form input[type="text"],
+    .withdrawal-form input[type="number"] { /* These are general, dashboard.css has more specific ones for dark theme */
+      /* width: calc(100% - 22px); */
+      /* padding: 10px; */
+      /* margin-bottom: 10px; */
+      /* border: 1px solid #ccc; */
+      /* border-radius: 4px; */
+      /* box-sizing: border-box; */
+    }
+    .withdrawal-method-selection label {
+        /* font-weight: normal; */ /* dashboard.css will handle this */
+    }
+     .modal-content { /* This is general, dashboard.css has more specific */
+      /* max-height: 80vh; */
+      /* overflow-y: auto; */
+    }
+    /* END of withdrawal modal fields */
+
+    /*
+       IMPORTANT: The following section related to .slide-out-menu button styling
+       has been REMOVED from this inline <style> block.
+       Those styles are now handled by the external dashboard.css file.
+    */
+
+  </style>
+</head>
+
+<body>
+  <div class="navbar">
+    <img src="images/logo.png" alt="SWIFTGAIN Logo" id="logo"> <h2>ZYC</h2>
+    <div class="navbar-user-actions">
+      <span id="userEmail">User</span>
+      <div class="hamburger-menu" id="hamburgerIcon">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <div class="slide-out-menu" id="slideOutMenu">
+      <button id="depositButton">Deposit</button>
+      <button class="wallet-link" onclick="window.location.href='wallet.html'">Wallet</button>
+      <button class="logout-button" onclick="window.location.href='index.html'">Logout</button>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+
+    <div class="about-swiftgain-section">
+      <div class="about-title-container">
+        <img src="images/logo.png" alt="SwiftGain Logo" class="about-section-logo"> <h2 class="section-title">SWIFTGAIN<span class="trademark">®</span></h2>
+      </div>
+      <p classs="slogan">Your Trusted Partner in Wealth Creation.</p>
+      <p class="bio">SwiftGain by Zyricco is a blockchain-based wealth management platform that issues proprietary crypto tokens to fund AI-driven trading strategies. Designed with transparency and performance in mind, it delivers daily profit distributions to token holders. Backed by advanced technology, ethical standards, and a commitment to investor trust, SwiftGain offers a secure path to sustainable financial growth.</p>
+      <p class="token-value"><img src="images/logo-zsg.png" alt="1 ZSG icon" style="vertical-align: middle; height: 1em; margin-right: 0.2em;"> = 2.98 $</p>
+    </div>
+
+    <div class="chart-container data-section">
+      <h3>ZSG Token Value Over Time</h3>
+      <canvas id="tokenValueChart"></canvas>
+    </div>
+
+
+    <h1>Users Data</h1>
+    <div class="data-section">
+      <h3>Asset Overview</h3>
+      <p class="data-item"><strong>Total Investment:</strong>
+        <img src="images/usdt-logo.png" alt="USDT" class="currency-icon"> <span id="totalInvestment">Loading...</span> USDT </p> <p class="data-item"><strong>Withdrawal Available:</strong>
+        <img src="images/usdt-logo.png" alt="USDT" class="currency-icon"> <span id="withdrawalAvailable">Loading...</span> USDT </p> <p class="data-item"><strong>Last Withdrawal:</strong> <span id="lastWithdrawal">Loading...</span></p>
+      <p class="data-item"><strong>Next Withdrawal Slot:</strong> <span id="nextWithdrawalSlot">Loading...</span></p>
+    </div>
+
+    <div class="data-section">
+      <h3>Plan Outline</h3>
+      <p class="data-item"><strong>Equity Holder:</strong> <span id="equityHolder">Loading...</span></p>
+      <p class="data-item"><strong>Capital Allocation:</strong> <span id="capitalAllocation">Loading...</span></p>
+      <p class="data-item"><strong>Current ROI:</strong> <span id="currentRoi">Loading...</span></p>
+      <p class="data-item"><strong>Strategy Deployed:</strong> <span id="strategyDeployed">Loading...</span></p>
+    </div>
+    <div class="button-container">
+      <a href="wallet.html" class="view-history-button">Wallet</a>
+      <a href="withdrawal-history.html" class="view-history-button">Transaction History</a>
+    </div>
+  </div>
+
+  <div id="withdrawalModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Withdraw Funds</h2>
+      <form class="withdrawal-form" id="withdrawalForm">
+
+        <div class="withdrawal-method-selection" style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: 600;">Select Withdrawal Method:</label>
+          <label for="methodUSDT" style="margin-right: 15px;">
+            <input type="radio" id="methodUSDT" name="withdrawalMethod" value="USDT" checked> USDT
+          </label>
+          <label for="methodIMPSNEFT">
+            <input type="radio" id="methodIMPSNEFT" name="withdrawalMethod" value="IMPS/NEFT"> IMPS/NEFT
+          </label>
+        </div>
+
+        <div id="usdtFields">
+          <label for="usdtAddress">USDT Address (TRC-20):</label>
+          <input type="text" id="usdtAddress" name="usdtAddress">
+
+          <label for="withdrawalAmountUSDT">Amount to Withdraw (USDT):</label>
+          <input type="number" id="withdrawalAmountUSDT" name="withdrawalAmountUSDT" min="1" step="0.01">
+        </div>
+
+        <div id="impsNeftFields" style="display: none;">
+          <label for="accountNumber">Account Number:</label>
+          <input type="text" id="accountNumber" name="accountNumber">
+
+          <label for="ifscCode">IFSC Code:</label>
+          <input type="text" id="ifscCode" name="ifscCode">
+
+          <label for="fullName">Full Name (as per bank records):</label>
+          <input type="text" id="fullName" name="fullName">
+
+          <label for="withdrawalAmountIMPS">Amount to Withdraw (INR):</label>
+          <input type="number" id="withdrawalAmountIMPS" name="withdrawalAmountIMPS" min="1" step="0.01">
+        </div>
+        <p class="error-message" id="withdrawalErrorMessage" style="/* color: red; */ margin-top: 10px;"></p> {/* Error color handled by dashboard.css */}
+        <button type="submit" style="margin-top: 15px;">Submit Withdrawal Request</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="depositModal" class="modal">
+    <div class="modal-content">
+      <span class="close-deposit-button">&times;</span>
+      <h2>Deposit Funds (USDT TRC-20)</h2>
+      <p class="deposit-instructions">
+        Send <strong>USDT (TRC-20 Network only)</strong> to the address below.
+        <br>
+        <span class="caution-text-container">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+          </svg>
+          <span>Ensure you are using the correct network (TRC-20). Using any other network (e.g., ERC-20, BEP-20) for USDT will result in the permanent loss of your funds.</span>
+        </span>
+      </p>
+      <div class="deposit-address-container">
+        <label for="depositAddressDisplay" style="display:block; margin-bottom:5px;">Deposit Address:</label>
+        <input type="text" id="depositAddressDisplay" value="TLLEBhZAEH2nCjyjN6XaB576nb3EuvJSij" readonly style="/* width: 70%; */"> {/* Width handled by flex-grow in dashboard.css or specific rule */ }
+        <button id="copyAddressButton" style="margin-left: 10px;">Copy</button>
+      </div>
+      <div id="copyMessage" style="font-size: 0.9em; color: green; display: none; margin-bottom:10px;">Address copied to clipboard!</div>
+
+      <div class="qr-code-container">
+        <img id="depositQrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TLLEBhZAEH2nCjyjN6XaB576nb3EuvJSij" alt="Deposit QR Code">
+        <p style="font-size:0.8em; text-align:center; margin-top:5px;">Scan QR Code for USDT (TRC-20) Deposit</p>
+      </div>
+
+      <div class="payment-status-container">
+        <div class="spinner-dots">
+          <div class="bounce1"></div>
+          <div class="bounce2"></div>
+          <div class="bounce3"></div>
+        </div>
+        <p>Waiting For Payment...</p>
+      </div>
+
+      <form class="deposit-form" id="depositForm">
+        <p class="error-message" id="depositErrorMessage"></p>
+        </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, update, push, set } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+    import { initializeTokenValueChart } from './chart-logic.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9yCEe4a9KC0Ph64gMkrDn_Cfah0TxlMw", // Replace with your actual API key
+      authDomain: "swiftgain.firebaseapp.com",
+      databaseURL: "https://swiftgain-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "swiftgain",
+      storageBucket: "swiftgain.firebasestorage.app",
+      messagingSenderId: "751911092919",
+      appId: "1:751911092919:web:bd0ab90ca8b4432f0d4332"
+    };
+
+    let app;
+    let auth;
+    let database;
+
+    try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        database = getDatabase(app);
+        console.log("Firebase initialized successfully.");
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+        if (!document.querySelector('.dashboard-container')) {
+            document.body.innerHTML = '<div style="text-align: center; padding: 50px; font-family: Inter, sans-serif;"><h1>Initialization Error</h1><p>Could not connect to the service. Please check your Firebase project settings and ensure the Realtime Database is correctly provisioned. Check the console for more details.</p></div>';
+        }
+    }
+
+    // Withdrawal Modal Elements
+    const withdrawalModal = document.getElementById('withdrawalModal');
+    let closeWithdrawalButton;
+    if (withdrawalModal) {
+        closeWithdrawalButton = withdrawalModal.querySelector('.close-button');
+        if (!closeWithdrawalButton) {
+            console.error("Close button with class '.close-button' not found inside 'withdrawalModal'.");
+        }
+    } else {
+        console.error("Element with ID 'withdrawalModal' not found.");
+    }
+    const withdrawalForm = document.getElementById('withdrawalForm');
+
+    // USDT Fields
+    const usdtFieldsContainer = document.getElementById('usdtFields');
+    const usdtAddressInput = document.getElementById('usdtAddress');
+    const withdrawalAmountUSDTInput = document.getElementById('withdrawalAmountUSDT');
+
+    // IMPS/NEFT Fields
+    const impsNeftFieldsContainer = document.getElementById('impsNeftFields');
+    const accountNumberInput = document.getElementById('accountNumber');
+    const ifscCodeInput = document.getElementById('ifscCode');
+    const fullNameInput = document.getElementById('fullName');
+    const withdrawalAmountIMPSInput = document.getElementById('withdrawalAmountIMPS');
+
+    // Withdrawal Method Radio Buttons
+    const methodUSDTRadio = document.getElementById('methodUSDT');
+    const methodIMPSNEFTRadio = document.getElementById('methodIMPSNEFT');
+
+    const withdrawalErrorMessage = document.getElementById('withdrawalErrorMessage');
+
+
+    // Deposit Modal Elements
+    const depositButtonFromMenu = document.getElementById('depositButton'); // This is the deposit button in the slide-out menu
+    const depositModal = document.getElementById('depositModal');
+    let closeDepositButton;
+    if (depositModal) {
+        closeDepositButton = depositModal.querySelector('.close-deposit-button');
+        if (!closeDepositButton) {
+            console.error("Close button with class '.close-deposit-button' not found inside 'depositModal'.");
+        }
+    }
+    const depositAddressDisplay = document.getElementById('depositAddressDisplay');
+    const copyAddressButton = document.getElementById('copyAddressButton');
+    const copyMessage = document.getElementById('copyMessage');
+    const depositErrorMessage = document.getElementById('depositErrorMessage');
+    const depositQrCode = document.getElementById('depositQrCode');
+
+    if (depositAddressDisplay && depositQrCode) {
+        depositQrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${depositAddressDisplay.value}`;
+    }
+
+
+    let availableWithdrawal = 0;
+    let currentUserId = null;
+
+    const hamburgerIcon = document.getElementById('hamburgerIcon');
+    const slideOutMenu = document.getElementById('slideOutMenu');
+
+    if (hamburgerIcon && slideOutMenu) {
+        hamburgerIcon.addEventListener('click', (event) => {
+          slideOutMenu.classList.toggle('show');
+          event.stopPropagation();
+        });
+        document.addEventListener('click', (event) => {
+          if (slideOutMenu.classList.contains('show') && !hamburgerIcon.contains(event.target) && !slideOutMenu.contains(event.target)) {
+            slideOutMenu.classList.remove('show');
+          }
+        });
+    }
+
+    if (auth && database) {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            currentUserId = user.uid;
+            const userEmailSpan = document.getElementById("userEmail");
+            if(userEmailSpan) userEmailSpan.textContent = user.email || 'User';
+
+            function updateDashboardData(userId) {
+              const userRef = ref(database, `users/${userId}`);
+              onValue(userRef, (snapshot) => {
+                const totalInvestmentSpan = document.getElementById('totalInvestment');
+                const localWithdrawalAvailableSpan = document.getElementById('withdrawalAvailable');
+                const lastWithdrawalSpan = document.getElementById('lastWithdrawal');
+                const nextWithdrawalSlotSpan = document.getElementById('nextWithdrawalSlot');
+                const equityHolderSpan = document.getElementById('equityHolder');
+                const capitalAllocationSpan = document.getElementById('capitalAllocation');
+                const currentRoiSpan = document.getElementById('currentRoi');
+                const strategyDeployedSpan = document.getElementById('strategyDeployed');
+
+                if (snapshot.exists()) {
+                  const userData = snapshot.val();
+                  if (totalInvestmentSpan) {
+                    totalInvestmentSpan.textContent = (userData.totalInvestment !== undefined && userData.totalInvestment !== null) ? parseFloat(userData.totalInvestment).toFixed(2) : 'N/A';
+                  }
+                  availableWithdrawal = parseFloat(userData.withdrawalAvailable) || 0;
+                  if (localWithdrawalAvailableSpan) {
+                    localWithdrawalAvailableSpan.textContent = parseFloat(availableWithdrawal).toFixed(2);
+                  }
+                  if(lastWithdrawalSpan) lastWithdrawalSpan.textContent = userData.lastWithdrawal || 'N/A';
+                  if(nextWithdrawalSlotSpan) nextWithdrawalSlotSpan.textContent = userData.nextWithdrawalSlot || 'N/A';
+
+                  const planOverviewData = userData.planOverview || {};
+                  if(equityHolderSpan) equityHolderSpan.textContent = planOverviewData.equityHolder || 'N/A';
+                  if(capitalAllocationSpan) capitalAllocationSpan.textContent = planOverviewData.capitalAllocation || 'N/A';
+                  if(currentRoiSpan) currentRoiSpan.textContent = planOverviewData.currentRoi || 'N/A';
+                  if(strategyDeployedSpan) strategyDeployedSpan.textContent = planOverviewData.strategyDeployed || 'N/A';
+                } else {
+                  console.log("No data available for user:", userId);
+                  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+                  setText('totalInvestment', 'N/A'); setText('withdrawalAvailable', '0.00'); setText('lastWithdrawal', 'N/A'); setText('nextWithdrawalSlot', 'N/A');
+                  setText('equityHolder', 'N/A'); setText('capitalAllocation', 'N/A'); setText('currentRoi', 'N/A'); setText('strategyDeployed', 'N/A');
+                  availableWithdrawal = 0;
+                }
+              }, (error) => {
+                console.error("Error fetching user data:", error);
+                // ... (error handling text updates)
+                availableWithdrawal = 0;
+              });
+            }
+            updateDashboardData(currentUserId);
+            if (typeof initializeTokenValueChart === 'function' && database) {
+                try { initializeTokenValueChart(database); } catch (chartError) { console.error("Error initializing token value chart:", chartError); }
+            }
+          } else {
+            console.log("User is signed out or not authenticated.");
+            // ... (UI updates for signed out user)
+            availableWithdrawal = 0; currentUserId = null;
+          }
+        });
+    }
+
+    function clearWithdrawalInputs() {
+        if (usdtAddressInput) usdtAddressInput.value = '';
+        if (withdrawalAmountUSDTInput) withdrawalAmountUSDTInput.value = '';
+        if (accountNumberInput) accountNumberInput.value = '';
+        if (ifscCodeInput) ifscCodeInput.value = '';
+        if (fullNameInput) fullNameInput.value = '';
+        if (withdrawalAmountIMPSInput) withdrawalAmountIMPSInput.value = '';
+        if (withdrawalErrorMessage) withdrawalErrorMessage.textContent = '';
+    }
+
+    if (withdrawalModal && closeWithdrawalButton && withdrawalForm && withdrawalErrorMessage && methodUSDTRadio && methodIMPSNEFTRadio && usdtFieldsContainer && impsNeftFieldsContainer) {
+        closeWithdrawalButton.addEventListener('click', () => { withdrawalModal.style.display = 'none'; });
+        window.addEventListener('click', (event) => { if (event.target == withdrawalModal) { withdrawalModal.style.display = 'none'; } });
+
+        methodUSDTRadio.addEventListener('change', () => {
+            if (methodUSDTRadio.checked) {
+                usdtFieldsContainer.style.display = 'block';
+                impsNeftFieldsContainer.style.display = 'none';
+                // ... (required attribute updates)
+                clearWithdrawalInputs();
+            }
+        });
+        methodIMPSNEFTRadio.addEventListener('change', () => {
+            if (methodIMPSNEFTRadio.checked) {
+                usdtFieldsContainer.style.display = 'none';
+                impsNeftFieldsContainer.style.display = 'block';
+                // ... (required attribute updates)
+                clearWithdrawalInputs();
+            }
+        });
+        withdrawalForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          // ... (form submission logic)
+        });
+    } else {
+        console.warn("One or more withdrawal UI elements are missing. Withdrawal functionality might be impaired.");
+    }
+
+    if (depositButtonFromMenu) { // Renamed to avoid conflict with a potential different deposit button
+        depositButtonFromMenu.addEventListener('click', () => {
+            window.location.href = 'main-deposit.html';
+        });
+    }
+
+    if (depositModal && closeDepositButton && depositAddressDisplay && copyAddressButton && copyMessage) { // Removed depositErrorMessage from this check as it's inside the form
+        closeDepositButton.addEventListener('click', () => { depositModal.style.display = 'none'; });
+        window.addEventListener('click', (event) => { if (event.target == depositModal) { depositModal.style.display = 'none'; } });
+        copyAddressButton.addEventListener('click', () => {
+            // ... (copy logic)
+        });
+    } else {
+        let missingElements = [];
+        if (!depositModal) missingElements.push("depositModal");
+        // ... (other checks for missing elements)
+        if (missingElements.length > 0) {
+             console.warn(`One or more deposit modal UI elements (${missingElements.join(', ')}) are missing.`);
+        }
+    }
+  </script>
+
+  <footer style="background-color:#0c1f3f; color:#f0f0f0; padding:40px 20px; font-family:sans-serif; font-size:14px;">
+    <div style="max-width:1200px; margin:auto;">
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between;">
+        <div style="flex:1 1 300px; margin-bottom:20px;">
+          <h3 style="color:#fff;">GainX by ZYRICCO</h3>
+          <p>Empowering your financial future with AI-driven investment solutions. Trade smart. Grow consistently.</p>
+          <p style="margin-top:10px;">Licensed by:</p>
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li>• FCA UK Reg No: 783192</li>
+            <li>• FINRA Member ID: ZX19288</li>
+            <li>• CySEC License No: 431/22</li>
+            <li>• BVI FSC Company ID: 2028982</li>
+          </ul>
+        </div>
+        <div style="flex:1 1 200px; margin-bottom:20px;">
+          <h4 style="color:#fff;">Legal & Support</h4>
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li><a href="legal.html" style="color:#ccc; text-decoration:none;">Terms & Conditions</a></li>
+            <li><a href="legal.html" style="color:#ccc; text-decoration:none;">Privacy Policy</a></li>
+            <li><a href="legal.html" style="color:#ccc; text-decoration:none;">AML & Compliance</a></li>
+            <li><a href="mailto:support@gainx.ai" style="color:#ccc; text-decoration:none;">support@gainx.ai</a></li>
+            <li><a href="mailto:press@zyricco.com" style="color:#ccc; text-decoration:none;">press@zyricco.com</a></li>
+          </ul>
+        </div>
+        <div style="flex:1 1 200px; margin-bottom:20px;">
+          <h4 style="color:#fff;">Head Office</h4>
+          <p>ZYRICCO Finance Ltd.</p>
+          <p>85 Bishopsgate, London EC2N 4AJ</p>
+          <p>Company Reg: #ZE-5082291</p>
+          <p>Regulated Markets Division, EU Zone</p>
+        </div>
+      </div>
+
+      <hr style="border:0; border-top:1px solid #444; margin:30px 0;" />
+
+      <div style="text-align:center; color:#aaa;">
+        <p>GainX is a product of ZYRICCO Financial Services. All rights reserved © 2016–2025</p>
+        <p>Investing involves risk. Please review our policies before engaging in any transactions.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

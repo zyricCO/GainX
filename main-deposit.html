@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDT TRC20 Deposit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* Styles for the full-page loader */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f4f7f6; /* Match body background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Ensure it's on top */
+        }
+
+        /* UPDATED LOADER SPINNER STYLES */
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            /* Softer track color, derived from your theme or a neutral light gray */
+            border: 8px solid rgba(42, 157, 143, 0.2); /* Light shade of theme color for the track */
+            border-top-color: #2a9d8f;    /* Active spinning part, theme color */
+            animation: spin 1s linear infinite; /* Linear for smooth, continuous spin */
+            /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth and a more "realistic" feel */
+        }
+        /* End of updated loader styles */
+
+        .deposit-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            margin-bottom: 30px;
+            position: relative;
+            display: none; /* Initially hidden */
+        }
+
+        .back-button-section {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+
+        h2 {
+            color: #2a9d8f;
+            margin-bottom: 25px;
+        }
+
+        .address-section p {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .address-section .address {
+            font-weight: bold;
+            font-size: 1em;
+            color: #e76f51;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            word-break: break-all;
+            margin-bottom: 15px;
+            background-color: #fdf2e9;
+        }
+
+        .qr-code-section img {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            display: block;
+            border: 5px solid #e9c46a;
+            border-radius: 8px;
+        }
+
+        .status-section {
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .status-text {
+            font-size: 1.1em;
+            color: #264653;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner { /* Spinner for "Waiting for Payment" */
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #2a9d8f;
+            animation: spin 1s ease infinite; /* This one can stay 'ease' or change to 'linear' too for consistency */
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .copy-button {
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .copy-button:hover {
+            background-color: #21867a;
+        }
+
+        .copy-feedback {
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #2a9d8f;
+            height: 15px;
+        }
+
+        .instructions {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+         .instructions ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            text-align: left;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .troubleshooting-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .troubleshooting-section p {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .troubleshooting-section a {
+            color: #e76f51;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .troubleshooting-section a:hover {
+            text-decoration: underline;
+        }
+
+        .transaction-details-form {
+            display: none;
+            margin-top: 20px;
+            background-color: #fdf2e9;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e9c46a;
+            text-align: left;
+        }
+
+        .transaction-details-form h3 {
+            color: #2a9d8f;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .transaction-details-form div {
+            margin-bottom: 15px;
+        }
+
+        .transaction-details-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #264653;
+        }
+
+        .transaction-details-form input[type="text"],
+        .transaction-details-form input[type="email"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9em;
+            box-sizing: border-box;
+        }
+
+        .transaction-details-form .copy-button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            margin-top: 5px;
+        }
+
+        #formSubmissionFeedback {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #2a9d8f;
+            height: 18px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="loader-overlay" id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <div class="deposit-container" id="mainContent">
+        <div class="back-button-section">
+            <a href="wallet.html" class="back-button">&larr; Back to Wallet</a>
+        </div>
+
+        <h2>USDT TRC20 Deposit</h2>
+
+        <div class="instructions">
+            <p>Send only USDT (TRC20) to this address. Sending any other coin to this address may result in the loss of your deposit.</p>
+        </div>
+
+        <div class="qr-code-section">
+            <img src="images/qr-usdt.png" alt="USDT TRC20 Deposit QR Code">
+        </div>
+
+        <div class="address-section">
+            <p>Deposit Address:</p>
+            <div class="address" id="depositAddress">TLLEBhZAEH2nCjyjN6XaB576nb3EuvJSij</div>
+            <button class="copy-button" onclick="copyAddress()">Copy Address</button>
+            <div class="copy-feedback" id="copyFeedback"></div>
+        </div>
+
+        <div class="status-section" id="paymentStatus">
+            <div class="status-text">
+                <div class="spinner"></div> Waiting For Payment...
+            </div>
+        </div>
+
+        <div class="troubleshooting-section">
+            <p>
+                If your payment is taking more than 45 minutes,
+                <a href="#" id="troubleshootLink">Click Here</a>.
+            </p>
+        </div>
+
+        <div class="transaction-details-form" id="transactionForm">
+            <h3>Submit Transaction Details</h3>
+            <div>
+                <label for="transactionHash">Enter Your Transaction Hash (TxID):</label>
+                <input type="text" id="transactionHash" name="transactionHash" placeholder="e.g., 0xabc123...">
+            </div>
+            <div>
+                <label for="email">Enter Your Email Address:</label>
+                <input type="email" id="email" name="email" placeholder="e.g., you@example.com">
+            </div>
+            <button class="copy-button" onclick="submitTransactionDetails()">Submit Details</button>
+            <div id="formSubmissionFeedback"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('pageLoader');
+            const mainContent = document.getElementById('mainContent');
+
+            setTimeout(function() {
+                if (loader) {
+                    loader.style.display = 'none';
+                }
+                if (mainContent) {
+                    mainContent.style.display = 'block';
+                }
+            }, 3000);
+
+            const troubleshootLink = document.getElementById('troubleshootLink');
+            const transactionForm = document.getElementById('transactionForm');
+
+            if (troubleshootLink) {
+                troubleshootLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    if (transactionForm) {
+                        if (transactionForm.style.display === 'none' || transactionForm.style.display === '') {
+                            transactionForm.style.display = 'block';
+                            transactionForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        } else {
+                            transactionForm.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        });
+
+        function copyAddress() {
+            const addressElement = document.getElementById('depositAddress');
+            const address = addressElement.innerText;
+            const feedbackElement = document.getElementById('copyFeedback');
+
+            navigator.clipboard.writeText(address).then(() => {
+                feedbackElement.innerText = 'Address copied to clipboard!';
+                setTimeout(() => {
+                    feedbackElement.innerText = '';
+                }, 2000);
+            }).catch(err => {
+                feedbackElement.innerText = 'Failed to copy address.';
+                console.error('Failed to copy: ', err);
+                try {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = address;
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    feedbackElement.innerText = 'Address copied! (fallback)';
+                    setTimeout(() => {
+                        feedbackElement.innerText = '';
+                    }, 2000);
+                } catch (execCommandErr) {
+                    feedbackElement.innerText = 'Failed to copy. Please copy manually.';
+                     console.error('Fallback copy failed: ', execCommandErr);
+                }
+            });
+        }
+
+        function submitTransactionDetails() {
+            const transactionHashInput = document.getElementById('transactionHash');
+            const emailInput = document.getElementById('email');
+            const transactionHash = transactionHashInput.value.trim();
+            const email = emailInput.value.trim();
+            const feedbackElement = document.getElementById('formSubmissionFeedback');
+
+            if (!transactionHash || !email) {
+                feedbackElement.innerText = 'Please fill in both fields.';
+                feedbackElement.style.color = '#e76f51';
+                setTimeout(() => {
+                    feedbackElement.innerText = '';
+                }, 3000);
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                feedbackElement.innerText = 'Please enter a valid email address.';
+                feedbackElement.style.color = '#e76f51';
+                setTimeout(() => {
+                    feedbackElement.innerText = '';
+                }, 3000);
+                return;
+            }
+
+            console.log('Transaction Hash:', transactionHash);
+            console.log('Email:', email);
+
+            feedbackElement.innerText = 'Details submitted successfully!';
+            feedbackElement.style.color = '#2a9d8f';
+
+            transactionHashInput.value = '';
+            emailInput.value = '';
+            setTimeout(() => {
+                feedbackElement.innerText = '';
+            }, 3000);
+        }
+
+        function validateEmail(email) {
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+    </script>
+
+</body>
+</html>

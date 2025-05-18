@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GainX - Terms Consent</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    #consentModal, #checkingScreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .modal-content, .checking-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #004080;
+    }
+
+    p, li {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    button {
+      background-color: #004080;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #003366;
+    }
+
+    #checkingScreen {
+      display: none;
+    }
+
+    .spinner {
+      margin: 20px auto;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ccc;
+      border-top: 4px solid #004080;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .modal-content, .checking-content {
+        padding: 20px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      h2 {
+        font-size: 16px;
+      }
+      button {
+        width: 100%;
+        font-size: 16px;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="consentModal">
+  <div class="modal-content">
+    <h1>Welcome to GainX Financial Services</h1>
+    <p><strong>Effective Date:</strong> 06/02/2016</p>
+    <p>Before accessing our services, please read and agree to the following Terms and Conditions.</p>
+
+    <h2>1. Services Provided</h2>
+    <p>We offer AI-powered forex trading investment solutions with various subscription options. Services may be updated or modified at any time.</p>
+
+    <h2>2. Eligibility</h2>
+    <p>Only individuals over the age of 18 may use our services. By continuing, you confirm your legal eligibility.</p>
+
+    <h2>3. Account Registration</h2>
+    <p>You are responsible for maintaining your account security and are liable for all activity under your credentials.</p>
+
+    <h2>4. Investment Risks</h2>
+    <p>All investments carry risk. We do not guarantee profits. You agree to invest at your own risk.</p>
+
+    <h2>5. Conduct Rules</h2>
+    <ul>
+      <li>Do not use our services for unlawful purposes.</li>
+      <li>Do not manipulate or harm the platform or other users.</li>
+    </ul>
+
+    <h2>6. Subscription and Withdrawals</h2>
+    <p>Each investment plan has specific terms. Withdrawals are reviewed and may be delayed for verification purposes.</p>
+
+    <h2>7. AML Compliance</h2>
+    <p>GainX adheres to international Anti-Money Laundering standards. We may:</p>
+    <ul>
+      <li>Request your ID and source of funds documentation.</li>
+      <li>Monitor transactions for unusual activity.</li>
+      <li>Freeze or report suspicious accounts.</li>
+    </ul>
+
+    <h2>8. Privacy</h2>
+    <p>Your data is processed in accordance with our Privacy Policy. By using our site, you accept this policy.</p>
+
+    <h2>9. Limitation of Liability</h2>
+    <p>We are not liable for investment losses, system outages, or unauthorized account access.</p>
+
+    <h2>10. Legal Jurisdiction</h2>
+    <p>These Terms are governed by the laws of the <strong>United Kingdom</strong>.</p>
+
+    <p>By clicking "I Agree", you confirm that you have read, understood, and accept the Terms and Conditions of GainX Financial Services.</p>
+    <button onclick="acceptTerms()">I Agree – Enter Website</button>
+  </div>
+</div>
+
+<div id="checkingScreen">
+  <div class="checking-content">
+    <h1>Checking your browser before accessing GainX...</h1>
+    <div class="spinner"></div>
+    <p>This process is automatic. Your browser will redirect shortly.<br>Please allow up to 5 seconds.</p>
+  </div>
+</div>
+
+<script>
+  function acceptTerms() {
+    document.getElementById('consentModal').style.display = 'none';
+    document.getElementById('checkingScreen').style.display = 'flex';
+
+    // Simulate secure check and redirect
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 5000); // 5 seconds delay
+  }
+</script>
+
+</body>
+</html>
