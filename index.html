@@ -15,10 +15,46 @@
 <link rel="stylesheet" href="css/responsive.css">
 <link rel="icon" href="images/fevicon.png" type="image/gif" />
 <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
-<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"> 
 <link rel="stylesheet" href="css/owl.carousel.min.css">
 <link rel="stylesheet" href="css/owl.theme.default.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js" media="screen">
+<style>
+  /* Basic styling for testimonial boxes for better visual separation if original team styling is too specific */
+  .testimonial_item {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px; /* Ensures spacing if stacked on smaller screens */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100%; /* For equal height columns */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .testimonial_stars {
+    color: #FFD700; /* Gold color for stars */
+    margin-bottom: 10px;
+    font-size: 1.1em; /* Adjust star size as needed */
+  }
+  .testimonial_text {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 15px;
+    flex-grow: 1;
+  }
+  .testimonial_author {
+    font-weight: bold;
+    color: #333;
+    text-align: right;
+  }
+  /* Making sure images in client testimonials aren't overly large if we decide to add them */
+  .testimonial_item img {
+      max-width: 80px; /* Example size, adjust as needed */
+      border-radius: 50%;
+      margin-bottom: 10px;
+  }
+</style>
 </head>
 <body>
   <div class="header_section">
@@ -193,58 +229,47 @@
         </div>
       </div>
     </div>
-    <div class="team_section layout_padding">
+
+    <div class="client_testimonials_section layout_padding">
       <div class="container">
-        <h1 class="what_taital">Our Team and Experts</h1>
-        <p class="what_text_1">Meet the dedicated professionals and financial strategists at GainX Zyricco™, committed to your investment success through expertise and innovation.</p>
-        <div class="team_section_2 layout_padding">
+        <h1 class="what_taital">Client Testimonials</h1>
+        <p class="what_text_1">Hear from our satisfied clients who have experienced the benefits of GainX Zyricco™ first-hand.</p>
+        <div class="testimonials_section_2 layout_padding">
           <div class="row">
-            <div class="col-sm-3">
-              <img src="images/img-7.png" class="image_7" alt="Team Member 1">
-              <p class="readable_text">Dr. Elara Vance</p>
-              <p class="readable_text_1">Chief AI Strategist</p>
-              <div class="social_icon">
-                <ul>
-                  <li><a href="#"><img src="images/fb-icon.png" alt="Facebook"></a></li>
-                  <li><a href="#"><img src="images/twitter-icon.png" alt="Twitter"></a></li>
-                  <li><a href="#"><img src="images/linkedin-icon.png" alt="LinkedIn"></a></li>
-                </ul>
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-4"> 
+              <div class="testimonial_item">
+                <div class="testimonial_stars">
+                  <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                </div>
+                <p class="testimonial_text">"GainX Zyricco™ has revolutionized my approach to investments. Their AI scalping technology is incredibly effective, and I've seen consistent returns that exceeded my expectations. The team is professional and always available to help. Truly a game-changer!"</p>
+                <p class="testimonial_author">- Alex P., GainX Client</p>
               </div>
             </div>
-            <div class="col-sm-3">
-              <img src="images/img-8.png" class="image_7" alt="Team Member 2">
-              <p class="readable_text">Marcus Chen</p>
-              <p class="readable_text_1">Head of Investments</p>
-              <div class="social_icon">
-                <ul>
-                  <li><a href="#"><img src="images/fb-icon.png" alt="Facebook"></a></li>
-                  <li><a href="#"><img src="images/twitter-icon.png" alt="Twitter"></a></li>
-                  <li><a href="#"><img src="images/linkedin-icon.png" alt="LinkedIn"></a></li>
-                </ul>
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+              <div class="testimonial_item">
+                <div class="testimonial_stars">
+                  <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                </div>
+                <p class="testimonial_text">"I was looking for a reliable investment service that offers both security and high returns. GainX Zyricco™ delivered on all fronts. The transparency in their operations and the performance of their AI strategies are commendable. I feel very confident about my financial future with them."</p>
+                <p class="testimonial_author">- Priya K., Wealth Managemen, GainX Client</p>
               </div>
             </div>
-            <div class="col-sm-3">
-              <img src="images/img-9.png" class="image_7" alt="Team Member 3">
-              <p class="readable_text">Sophia Rivera</p>
-              <p class="readable_text_1">Senior Financial Analyst</p>
-              <div class="social_icon">
-                <ul>
-                  <li><a href="#"><img src="images/fb-icon.png" alt="Facebook"></a></li>
-                  <li><a href="#"><img src="images/twitter-icon.png" alt="Twitter"></a></li>
-                  <li><a href="#"><img src="images/linkedin-icon.png" alt="LinkedIn"></a></li>
-                </ul>
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+              <div class="testimonial_item">
+                <div class="testimonial_stars">
+                  <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i> 
+                </div>
+                <p class="testimonial_text">"The support and guidance from GainX Zyricco™ have been outstanding. Their AI-driven insights provide a clear advantage in the market. Knowing my investments are backed by company capital gives me immense peace of mind. Highly recommended for anyone serious about growing their wealth."</p>
+                <p class="testimonial_author">- Ben L., AI Accounting Client</p>
               </div>
             </div>
-            <div class="col-sm-3">
-              <img src="images/img-10.png" class="image_7" alt="Team Member 4">
-              <p class="readable_text">James Lee</p>
-              <p class="readable_text_1">Client Relations Manager</p>
-              <div class="social_icon">
-                <ul>
-                  <li><a href="#"><img src="images/fb-icon.png" alt="Facebook"></a></li>
-                  <li><a href="#"><img src="images/twitter-icon.png" alt="Twitter"></a></li>
-                  <li><a href="#"><img src="images/linkedin-icon.png" alt="LinkedIn"></a></li>
-                </ul>
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+              <div class="testimonial_item">
+                <div class="testimonial_stars">
+                  <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                </div>
+                <p class="testimonial_text">"Exceptional service and impressive results! The AI scalping feature is particularly brilliant, providing quick and tangible returns. The exclusivity of the service ensures that performance isn't diluted. I'm thrilled to be a part of GainX Zyricco™."</p>
+                <p class="testimonial_author">- Sophia R., GainX Client</p>
               </div>
             </div>
           </div>
