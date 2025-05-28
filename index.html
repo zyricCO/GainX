@@ -101,10 +101,10 @@
     <h1>Scheduled Maintenance</h1>
     <h2>The server you are trying to reach is temporarily unavailable.</h2>
     <p>We are performing essential updates to improve your experience.</p>
-    <p>The maintenance may take up to <strong>24 to 48 hours</strong> to complete.</p>
+    <p>The maintenance is expected to complete by <strong>May 29, 2025 – 9:25 PM</strong>.</p>
     <p>We appreciate your patience and understanding during this time.</p>
 
-    <div class="countdown" id="countdown">Estimated time remaining: 24:00:00</div>
+    <div class="countdown" id="countdown">Calculating time remaining...</div>
 
     <div class="ip-box" id="ip-address">Fetching your IP address...</div>
 
@@ -113,32 +113,26 @@
 
   <script>
     const countdownElement = document.getElementById("countdown");
-    const storedDeadline = localStorage.getItem("maintenanceDeadline");
 
-    // Set deadline in localStorage if not already set
-    let deadline;
-    if (storedDeadline) {
-      deadline = parseInt(storedDeadline);
-    } else {
-      deadline = new Date().getTime() + 24 * 60 * 60 * 1000; // 24 hours
-      localStorage.setItem("maintenanceDeadline", deadline);
-    }
+    // Countdown target: May 29, 2025, 9:25 PM local time
+    const targetDate = new Date("2025-05-29T21:25:00");
 
     const countdownInterval = setInterval(() => {
       const now = new Date().getTime();
-      const distance = deadline - now;
+      const distance = targetDate - now;
 
       if (distance <= 0) {
         clearInterval(countdownInterval);
-        countdownElement.textContent = "Maintenance period has ended. You may now refresh the page.";
+        countdownElement.textContent = "Maintenance has completed. Please refresh the page.";
         return;
       }
 
-      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      countdownElement.textContent = `Estimated time remaining: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      countdownElement.textContent = `Estimated time remaining: ${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
     }, 1000);
 
     // Fetch IP address
